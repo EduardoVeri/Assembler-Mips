@@ -49,21 +49,21 @@ instr_I = {
     'addi': '001000',
     'andi': '001100',
     'ori': '001101',
-    'xori': '001110',
-    'lw': '001111',
+    'xori': '101101',
+    'lw': '100011',
     'sw': '101011',
     'beq': '000100',
     'bne': '000101',
     'slti': '001010',
-    'in': '001111',
-    'out': '101011',
-    'subi': '001000'
+    'in': '011111',
+    'out': '011110',
+    'subi': '001001'
 }
 
 instr_J = {
     'j': '000010',
     'jal': '000011',
-    'halt': '000000'
+    'halt': '111111'
 }
 
 # Dicionário com os functs das instruções
@@ -113,7 +113,7 @@ def bin_R(arq, tokens, linha):
         sys.exit()
     
     # Escrevendo o código em linguagem de máquina no arquivo de saída
-    arq.write('000000' + reg[tokens[2]] + reg[tokens[3]] + reg[tokens[1]] + '00000' + funct[tokens[4]] + '\n')
+    arq.write('000000' + reg[tokens[2]] + reg[tokens[3]] + reg[tokens[1]] + '00000' + funct[tokens[0]] + '\n')
 
 def bin_I(arq, tokens, linha):
     # Verificando se o número de tokens está correto
@@ -145,7 +145,8 @@ def bin_I(arq, tokens, linha):
         # Escrevendo o código em linguagem de máquina no arquivo de saída
         arq.write(instr_I[tokens[0]] + reg[tokens[1]] + reg[tokens[2]] + label[tokens[3]] + '\n')
     
-    else:
+    elif tokens[0] in ['lw', 'sw']:
+        # TODO: Verificar esse código 
         # Verificar se o segundo token é um inteiro:
         if not tokens[2].isdigit():
             print('Erro de sintaxe na linha: ', linha)
@@ -157,22 +158,54 @@ def bin_I(arq, tokens, linha):
             print('Erro de sintaxe na linha: ', linha)
             print('Imediato inválido! Não representa um número de 16 bits!')
             sys.exit()
-
+        
+        # Verificar se o terceiro token é um registrador
         if tokens[3] not in reg:
+            print('Erro de sintaxe na linha: ', linha)
+            print('Registrador 3 inválido!')
+            sys.exit()
+        
+        # Converter o imediato para binario de 16 bits
+        tokens[2] = bin(int(tokens[2]))[2:].zfill(16)
+
+        # Escrevendo o código em linguagem de máquina no arquivo de saída
+        arq.write(instr_I[tokens[0]] + reg[tokens[3]] + reg[tokens[1]] + tokens[2] + '\n')
+    else:
+        # Verificar se o segundo token é um inteiro:
+        if not tokens[3].isdigit():
+            print('Erro de sintaxe na linha: ', linha)
+            print('Imediato inválido! Não representa um inteiro!')
+            sys.exit()
+        
+        # Verificar se o inteiro é um número de 16 bits
+        if int(tokens[3]) > 65535:
+            print('Erro de sintaxe na linha: ', linha)
+            print('Imediato inválido! Não representa um número de 16 bits!')
+            sys.exit()
+
+        if tokens[2] not in reg:
             print('Erro de sintaxe na linha: ', linha)
             print('Registrador 2 inválido!')
             sys.exit()
 
+        # Converter o imediato para binario de 16 bits
+        tokens[3] = bin(int(tokens[3]))[2:].zfill(16)
+
         # Escrevendo o código em linguagem de máquina no arquivo de saída
-        arq.write(instr_I[tokens[0]] + reg[tokens[3]] + reg[tokens[1]] + tokens[2] + '\n')
+        arq.write(instr_I[tokens[0]] + reg[tokens[2]] + reg[tokens[1]] + tokens[3] + '\n')
 
 def bin_J(arq, tokens, linha):
+    if tokens[0] == 'halt':
+        # Escrevendo o código em linguagem de máquina no arquivo de saída
+        arq.write(instr_J[tokens[0]] + '00000000000000000000000000' + '\n')
+        return
+    
     # Verificando se o número de tokens está correto
     if len(tokens) != 2:
         print('Erro de sintaxe na linha: ', linha)
         print('Número de tokens inválido!')
         sys.exit()
-    
+
     # Verificando se o primeiro token é uma label
     if tokens[1] not in label:
         print('Erro de sintaxe na linha: ', linha)
@@ -186,14 +219,14 @@ def bin_J(arq, tokens, linha):
 if __name__ == '__main__':
     # Abrindo o arquivo .txt com o código fonte
     try:
-        arq_in = open(sys.argv[1], 'r')
+        arq_in = open("soma.txt", 'r')
     except:
         print('Erro ao abrir o arquivo! Arquivo não encontrado')
         sys.exit()
 
     # Abrindo o arquivo .txt para escrever o código em linguagem de máquina
     try:
-        arq_out = open(sys.argv[2], 'w')
+        arq_out = open("bin.txt", 'w')
     except:
         print('Erro ao abrir o arquivo de saída!')
         sys.exit()
@@ -221,10 +254,11 @@ if __name__ == '__main__':
             # Verificando se a linha é uma instrução
             else:
                 # Separando a linha em tokens
-                tokens = linha.split(" \n\t,()")
-                tokens_list.append((tokens, linha))
-            
-    for tokens, linha in zip(tokens_list):
+                tokens = re.split(r'\s+', linha)
+                tokens_list.append((tokens, str(arq_out.tell()) + ": " + linha))
+
+    for tokens, linha in tokens_list:
+        print(tokens, linha)
         # Verificando se o primeiro token é uma instrução e qual o seu tipo
         if tokens[0] in funct:
             bin_R(arq_out, tokens, linha)
@@ -233,7 +267,7 @@ if __name__ == '__main__':
         elif tokens[0] in instr_J:
             bin_J(arq_out, tokens, linha)
         else:
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Instrução inválida!')
             sys.exit()
 

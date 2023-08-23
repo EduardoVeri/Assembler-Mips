@@ -1,0 +1,5 @@
+ori $t0 $zero 10
+ori $t1 $zero 20
+add $t2 $t0 $t1
+out $zero $t2 0
+halt 
