@@ -26,20 +26,40 @@ reg = {
 # Dicionário com as instruções do tipo R
 instr_R = {
     'add': '000000',
-    'sub': '000001',
+    'sub': '000000',
+    'and': '000000',
+    'or': '000000',
+    'xor': '000000',
+    'nor': '000000',
+    'slt': '000000',
+    'sll': '000000',
+    'srl': '000000',
+    'jr': '000000',
+    'mult': '000000',
+    'div': '000000',
+    'jalr': '000000'
 }
 
 # Dicionário com as instruções do tipo I
 instr_I = {
-    'add': '000000',
-    'sub': '000001',
-    'and': '000010',
-    'or': '000011',
+    'addi': '001000',
+    'andi': '001100',
+    'ori': '001101',
+    'xori': '001110',
+    'lw': '001111',
+    'sw': '101011',
+    'beq': '000100',
+    'bne': '000101',
+    'slti': '001010',
+    'in': '001111',
+    'out': '101011',
+    'subi': '001000'
 }
 
 instr_J = {
     'j': '000010',
     'jal': '000011',
+    'halt': '000000'
 }
 
 # Dicionário com os functs das instruções
