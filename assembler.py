@@ -233,8 +233,10 @@ if __name__ == '__main__':
 
     tokens_list = []
 
+    total_lines = 0
     # Lendo o arquivo .txt com o código fonte
     for linha in arq_in:
+        total_lines += 1
         # Removendo os espaços em branco
         linha = linha.strip()
 
@@ -249,13 +251,14 @@ if __name__ == '__main__':
             # Verificando se a linha é uma label
             if linha[-1] == ':':
                 # Adicionando a label no dicionário
-                label[linha[:-1]] = arq_out.tell()
+                label[linha[:-1]] = total_lines
 
             # Verificando se a linha é uma instrução
             else:
                 # Separando a linha em tokens
-                tokens = re.split(r'\s+', linha)
-                tokens_list.append((tokens, str(arq_out.tell()) + ": " + linha))
+                tokens = list(filter(None, re.split(r'\s+|\(|\)', linha)))
+                tokens_list.append((tokens, str(total_lines) + ": " + linha))
+        
 
     for tokens, linha in tokens_list:
         print(tokens, linha)
