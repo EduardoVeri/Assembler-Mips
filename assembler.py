@@ -6,38 +6,42 @@ e converter para um arquivo .txt com o código em linguagem de máquina."""
 # Importando as bibliotecas necessárias
 import sys
 import re
-import os
 
 # Definindo as variáveis globais
 # Dicionário com os registradores
 reg = {
-    '$zero': '00000',
-    '$at': '00001',
-    '$v0': '00010',
-    '$v1': '00011',
-    '$a0': '00100',
-    '$a1': '00101',
-    '$a2': '00110',
-    '$a3': '00111',
-    '$t0': '01000',
-    '$t1': '01001',
-}
-
-# Dicionário com as instruções do tipo R
-instr_R = {
-    'add': '000000',
-    'sub': '000000',
-    'and': '000000',
-    'or': '000000',
-    'xor': '000000',
-    'nor': '000000',
-    'slt': '000000',
-    'sll': '000000',
-    'srl': '000000',
-    'jr': '000000',
-    'mult': '000000',
-    'div': '000000',
-    'jalr': '000000'
+    '$zero': '11111',
+    '$ra' : '11110',
+    '$fp' : '11101',
+    '$sp' : '11100',
+    '$temp' : '11011',
+    '$pilha' : '11010',
+    '$t25' : '11001',
+    '$t24' : '11000',
+    '$t23' : '10111',
+    '$t22' : '10110',
+    '$t21' : '10101',
+    '$t20' : '10100',
+    '$t19' : '10011',
+    '$t18' : '10010',
+    '$t17' : '10001',
+    '$t16' : '10000',
+    '$t15' : '01111',
+    '$t14' : '01110',
+    '$t13' : '01101',
+    '$t12' : '01100',
+    '$t11' : '01011',
+    '$t10' : '01010',
+    '$t9' : '01001',
+    '$t8' : '01000',
+    '$t7' : '00111',
+    '$t6' : '00110',
+    '$t5' : '00101',
+    '$t4' : '00100',
+    '$t3' : '00011',
+    '$t2' : '00010',
+    '$t1' : '00001',
+    '$t0' : '00000'
 }
 
 # Dicionário com as instruções do tipo I
@@ -68,6 +72,15 @@ funct = {
     'sub': '100010',
     'and': '100100',
     'or': '100101',
+    'xor': '101101',
+    'nor': '100111',
+    'slt': '101010',
+    'sll': '000000',
+    'srl': '000010',
+    'jr': '001000',
+    'mult': '011000',
+    'div': '011010',
+    'jalr': '001001'
 }
 
 # Dicionário com as labels
@@ -100,7 +113,7 @@ def bin_R(arq, tokens, linha):
         sys.exit()
     
     # Escrevendo o código em linguagem de máquina no arquivo de saída
-    arq.write(instr_R[tokens[0]] + reg[tokens[2]] + reg[tokens[3]] + reg[tokens[1]] + '00000' + funct[tokens[4]] + '\n')
+    arq.write('000000' + reg[tokens[2]] + reg[tokens[3]] + reg[tokens[1]] + '00000' + funct[tokens[4]] + '\n')
 
 def bin_I(arq, tokens, linha):
     # Verificando se o número de tokens está correto
@@ -213,7 +226,7 @@ if __name__ == '__main__':
             
     for tokens, linha in zip(tokens_list):
         # Verificando se o primeiro token é uma instrução e qual o seu tipo
-        if tokens[0] in instr_R:
+        if tokens[0] in funct:
             bin_R(arq_out, tokens, linha)
         elif tokens[0] in instr_I:
             bin_I(arq_out, tokens, linha)
