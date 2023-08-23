@@ -109,70 +109,104 @@ def bin_I(arq, tokens, linha):
             print('Label inválida!')
             sys.exit()
         
-        
-
+        # Escrevendo o código em linguagem de máquina no arquivo de saída
+        arq.write(instr_I[tokens[0]] + reg[tokens[1]] + reg[tokens[2]] + label[tokens[3]] + '\n')
     
+    else:
+        # Verificar se o segundo token é um inteiro:
+        if not tokens[2].isdigit():
+            print('Erro de sintaxe na linha: ', linha)
+            print('Imediato inválido! Não representa um inteiro!')
+            sys.exit()
+        
+        # Verificar se o inteiro é um número de 16 bits
+        if int(tokens[2]) > 65535:
+            print('Erro de sintaxe na linha: ', linha)
+            print('Imediato inválido! Não representa um número de 16 bits!')
+            sys.exit()
 
+        if tokens[3] not in reg:
+            print('Erro de sintaxe na linha: ', linha)
+            print('Registrador 2 inválido!')
+            sys.exit()
 
+        # Escrevendo o código em linguagem de máquina no arquivo de saída
+        arq.write(instr_I[tokens[0]] + reg[tokens[3]] + reg[tokens[1]] + tokens[2] + '\n')
 
 def bin_J(arq, tokens, linha):
-    return
+    # Verificando se o número de tokens está correto
+    if len(tokens) != 2:
+        print('Erro de sintaxe na linha: ', linha)
+        print('Número de tokens inválido!')
+        sys.exit()
+    
+    # Verificando se o primeiro token é uma label
+    if tokens[1] not in label:
+        print('Erro de sintaxe na linha: ', linha)
+        print('Label inválida!')
+        sys.exit()
+    
+    # Escrevendo o código em linguagem de máquina no arquivo de saída
+    arq.write(instr_J[tokens[0]] + label[tokens[1]] + '\n')
 
 
+if __name__ == '__main__':
+    # Abrindo o arquivo .txt com o código fonte
+    try:
+        arq_in = open(sys.argv[1], 'r')
+    except:
+        print('Erro ao abrir o arquivo! Arquivo não encontrado')
+        sys.exit()
 
-# Abrindo o arquivo .txt com o código fonte
-try:
-    arq_in = open(sys.argv[1], 'r')
-except:
-    print('Erro ao abrir o arquivo! Arquivo não encontrado')
-    sys.exit()
+    # Abrindo o arquivo .txt para escrever o código em linguagem de máquina
+    try:
+        arq_out = open(sys.argv[2], 'w')
+    except:
+        print('Erro ao abrir o arquivo de saída!')
+        sys.exit()
 
-# Abrindo o arquivo .txt para escrever o código em linguagem de máquina
-try:
-    arq_out = open(sys.argv[2], 'w')
-except:
-    print('Erro ao abrir o arquivo de saída!')
-    sys.exit()
+    tokens_list = []
 
-# Lendo o arquivo .txt com o código fonte
-for linha in arq_in:
-    # Removendo os espaços em branco
-    linha = linha.strip()
+    # Lendo o arquivo .txt com o código fonte
+    for linha in arq_in:
+        # Removendo os espaços em branco
+        linha = linha.strip()
 
-    # Removendo os comentários
-    linha = re.sub(r'#.*', '', linha)
+        # Removendo os comentários
+        linha = re.sub(r'#.*', '', linha)
 
-    # Removendo os espaços em branco
-    linha = linha.strip()
+        # Removendo os espaços em branco
+        linha = linha.strip()
 
-    # Verificando se a linha não está vazia
-    if linha != '':
-        # Verificando se a linha é uma label
-        if linha[-1] == ':':
-            # Adicionando a label no dicionário
-            label[linha[:-1]] = arq_out.tell()
+        # Verificando se a linha não está vazia
+        if linha != '':
+            # Verificando se a linha é uma label
+            if linha[-1] == ':':
+                # Adicionando a label no dicionário
+                label[linha[:-1]] = arq_out.tell()
 
-        # Verificando se a linha é uma instrução
-        else:
-            # Separando a linha em tokens
-            tokens = linha.split(" \n\t,()")
-
-            # Verificando se o primeiro token é uma label
-            if tokens[0][-1] == ':':
-                # Removendo a label da lista de tokens
-                tokens.pop(0)
-                continue
-
-            # Verificando se o primeiro token é uma instrução e qual o seu tipo
-            if tokens[0] in instr_R:
-                bin_R(arq_out, tokens, linha)
-            elif tokens[0] in instr_I:
-                bin_I(arq_out, tokens, linha)
-            elif tokens[0] in instr_J:
-                bin_J(arq_out, tokens, linha)
+            # Verificando se a linha é uma instrução
             else:
-                print('Erro de sintaxe na linha: ', linha)
-                print('Instrução inválida!')
-                sys.exit()
+                # Separando a linha em tokens
+                tokens = linha.split(" \n\t,()")
+                tokens_list.append((tokens, linha))
+            
+    for tokens, linha in zip(tokens_list):
+        # Verificando se o primeiro token é uma instrução e qual o seu tipo
+        if tokens[0] in instr_R:
+            bin_R(arq_out, tokens, linha)
+        elif tokens[0] in instr_I:
+            bin_I(arq_out, tokens, linha)
+        elif tokens[0] in instr_J:
+            bin_J(arq_out, tokens, linha)
+        else:
+            print('Erro de sintaxe na linha: ', linha)
+            print('Instrução inválida!')
+            sys.exit()
 
+    # Fechando os arquivos
+    arq_in.close()
+    arq_out.close()
+
+    print('Arquivo de saída gerado com sucesso!')
 
