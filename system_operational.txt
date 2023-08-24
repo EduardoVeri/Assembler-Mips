@@ -1,0 +1,23 @@
+# Nesse arquivo vai ser escrito o código de um sistema operacional para um processador MIPS com funcionalidades reduzidas
+# O sistema operacional deve possuir um prompt de comando que deve perguntar ao usuário duas opções:
+# 1 - Executar um programa em Assembly MIPS reduzida
+# 2 - Executar vários programas com preempção
+# O sistema operacional deve possuir um gerenciador de processos que deve ser capaz de executar vários programas em Assembly MIPS reduzida
+# O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
+# O sistema operacional será escrito na linguagem assembly MIPS reduzida
+
+main:
+ori $t1 $zero 1 # Carregar o valor 1 no registrador $t1
+#disp $zero $zero 1 # Imprimir no display as opções disponíveis para o usuário
+in $t0 $zero 0 # Perguntar ao usuário se ele deseja executar um programa em Assembly MIPS reduzida ou vários programas com preempção
+beq $t0 $zero escolha_1 # Se o usuário digitar 1, executar um programa em Assembly MIPS reduzida
+beq $t0 $t1 escolha_2 # Se o usuário digitar 2, executar vários programas com preempção
+bne $zero $t1 main # Se o usuário digitar qualquer outro valor, voltar para o início do programa
+
+
+
+escolha_1:
+
+
+
+escolha_2:

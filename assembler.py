@@ -142,8 +142,11 @@ def bin_I(arq, tokens, linha):
             print('Label inválida!')
             sys.exit()
         
+        # Traduzir a label para um valor imediato de 16 bits
+        tokens[3] = bin(label[tokens[3]])[2:].zfill(16)
+
         # Escrevendo o código em linguagem de máquina no arquivo de saída
-        arq.write(instr_I[tokens[0]] + reg[tokens[1]] + reg[tokens[2]] + label[tokens[3]] + '\n')
+        arq.write(instr_I[tokens[0]] + reg[tokens[1]] + reg[tokens[2]] + str(tokens[3]) + '\n')
     
     elif tokens[0] in ['lw', 'sw']:
         # TODO: Verificar esse código 
@@ -219,7 +222,7 @@ def bin_J(arq, tokens, linha):
 if __name__ == '__main__':
     # Abrindo o arquivo .txt com o código fonte
     try:
-        arq_in = open("soma.txt", 'r')
+        arq_in = open("system_operational.txt", 'r')
     except:
         print('Erro ao abrir o arquivo! Arquivo não encontrado')
         sys.exit()
@@ -261,7 +264,7 @@ if __name__ == '__main__':
         
 
     for tokens, linha in tokens_list:
-        print(tokens, linha)
+        # print(tokens, linha)
         # Verificando se o primeiro token é uma instrução e qual o seu tipo
         if tokens[0] in funct:
             bin_R(arq_out, tokens, linha)
