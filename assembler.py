@@ -255,7 +255,7 @@ if __name__ == '__main__':
             if linha[-1] == ':':
                 # Adicionando a label no dicionário
                 label[linha[:-1]] = total_lines
-
+                tokens_list.append(([linha[:-1]], str(total_lines) + ": " + linha))
             # Verificando se a linha é uma instrução
             else:
                 # Separando a linha em tokens
@@ -264,7 +264,6 @@ if __name__ == '__main__':
         
 
     for tokens, linha in tokens_list:
-        # print(tokens, linha)
         # Verificando se o primeiro token é uma instrução e qual o seu tipo
         if tokens[0] in funct:
             bin_R(arq_out, tokens, linha)
@@ -272,6 +271,8 @@ if __name__ == '__main__':
             bin_I(arq_out, tokens, linha)
         elif tokens[0] in instr_J:
             bin_J(arq_out, tokens, linha)
+        elif tokens[0] in label:
+            arq_out.write('00000011111111111111100000100000\n')
         else:
             print('Erro de sintaxe na linha', linha)
             print('Instrução inválida!')
