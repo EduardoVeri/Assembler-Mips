@@ -57,7 +57,9 @@ instr_I = {
     'slti': '001010',
     'in': '011111',
     'out': '011110',
-    'subi': '001001'
+    'subi': '001001',
+    'disp': '111110',
+    'wait': '100100'
 }
 
 instr_J = {
@@ -215,14 +217,17 @@ def bin_J(arq, tokens, linha):
         print('Label inválida!')
         sys.exit()
     
+    # Traduzir a label para um valor imediato de 26 bits
+    tokens[1] = bin(label[tokens[1]])[2:].zfill(26)
+
     # Escrevendo o código em linguagem de máquina no arquivo de saída
-    arq.write(instr_J[tokens[0]] + label[tokens[1]] + '\n')
+    arq.write(instr_J[tokens[0]] + tokens[1] + '\n')
 
 
 if __name__ == '__main__':
     # Abrindo o arquivo .txt com o código fonte
     try:
-        arq_in = open("system_operational.txt", 'r')
+        arq_in = open("/home/eduardo/Documents/Lab. SO/system_operational.txt", 'r')
     except:
         print('Erro ao abrir o arquivo! Arquivo não encontrado')
         sys.exit()
