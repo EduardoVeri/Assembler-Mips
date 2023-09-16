@@ -1,0 +1,71 @@
+# Nesse arquivo vai ser escrito o código de um sistema operacional para um processador MIPS com funcionalidades reduzidas
+# O sistema operacional deve possuir um prompt de comando que deve perguntar ao usuário duas opções:
+# 1 - Executar um programa em Assembly MIPS reduzida
+# 2 - Executar vários programas com preempção
+# O sistema operacional deve possuir um gerenciador de processos que deve ser capaz de executar vários programas em Assembly MIPS reduzida
+# O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
+# O sistema operacional será escrito na linguagem assembly MIPS reduzida
+
+main:
+    ori $t1 $zero 1             # Carregar o valor 1 no registrador $t1
+    disp $zero $zero 1         # Imprimir no display as opções disponíveis para o usuário
+    in $t0 $zero 0              # Perguntar ao usuário se ele deseja executar um programa em Assembly MIPS reduzida ou vários programas com preempção
+    beq $t0 $zero escolha_1     # Se o usuário digitar 1, executar um programa em Assembly MIPS reduzida
+    beq $t0 $t1 escolha_2       # Se o usuário digitar 2, executar vários programas com preempção
+    bne $zero $t1 main          # Se o usuário digitar qualquer outro valor, voltar para o início do programa
+
+escolha_1:                      # Executar um programa em Assembly MIPS reduzida
+    #disp #zero $zero 2         # Imprimir no display os programas disponíveis para o usuário
+    in $t0 $zero 0              # Perguntar ao usuário qual programa ele deseja executar
+    #hd $t1 $t0 1               # Carregar o programa escolhido pelo usuário na memória de dados 
+    #mem $t1 $zero 250          # Carregar o programa escolhido pelo usuário na memória de instruções
+    addi $t2 $pc 3              # Somar o imediato 3 ao valor do pc atual e armazenar no registrador $t2
+    sw $t2 2500($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2500
+    #pc $zero $zero 250         # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
+    
+
+
+    j main                      # Volta para o início do programa
+
+escolha_2:                      # Executar vários programas com preempção
+
+    jal salva_contexto          # Salvar o contexto do programa atual
+
+    
+
+    j main                      # Volta para o início do programa
+
+
+salva_contexto:
+    sw $t0 2501($zero)          # Armazenar o valor do registrador $t0 no endereço de memória 2501
+    sw $t1 2502($zero)          # Armazenar o valor do registrador $t1 no endereço de memória 2502
+    sw $t2 2503($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2503
+    sw $t3 2504($zero)          # Armazenar o valor do registrador $t3 no endereço de memória 2504
+    sw $t4 2505($zero)          # Armazenar o valor do registrador $t4 no endereço de memória 2505
+    sw $t5 2506($zero)          # Armazenar o valor do registrador $t5 no endereço de memória 2506
+    sw $t6 2507($zero)          # Armazenar o valor do registrador $t6 no endereço de memória 2507
+    sw $t7 2508($zero)          # Armazenar o valor do registrador $t7 no endereço de memória 2508
+    sw $t8 2509($zero)          # Armazenar o valor do registrador $t8 no endereço de memória 2509
+    sw $t9 2510($zero)          # Armazenar o valor do registrador $t9 no endereço de memória 2510
+    sw $t10 2511($zero)         # Armazenar o valor do registrador $s0 no endereço de memória 2511
+    sw $t11 2512($zero)         # Armazenar o valor do registrador $s1 no endereço de memória 2512
+    sw $t12 2513($zero)         # Armazenar o valor do registrador $s2 no endereço de memória 2513
+    sw $t13 2514($zero)         # Armazenar o valor do registrador $s3 no endereço de memória 2514
+    sw $t14 2515($zero)         # Armazenar o valor do registrador $s4 no endereço de memória 2515
+    sw $t15 2516($zero)         # Armazenar o valor do registrador $s5 no endereço de memória 2516
+    sw $t16 2517($zero)         # Armazenar o valor do registrador $s6 no endereço de memória 2517
+    sw $t17 2518($zero)         # Armazenar o valor do registrador $s7 no endereço de memória 2518
+    sw $t18 2519($zero)         # Armazenar o valor do registrador $s8 no endereço de memória 2519
+    sw $t19 2520($zero)         # Armazenar o valor do registrador $s9 no endereço de memória 2520
+    sw $t20 2521($zero)         # Armazenar o valor do registrador $k0 no endereço de memória 2521
+    sw $t21 2522($zero)         # Armazenar o valor do registrador $k1 no endereço de memória 2522
+    sw $t22 2523($zero)         # Armazenar o valor do registrador $gp no endereço de memória 2523
+    sw $t23 2524($zero)         # Armazenar o valor do registrador $sp no endereço de memória 2524
+    sw $t24 2525($zero)         # Armazenar o valor do registrador $fp no endereço de memória 2525
+    sw $t25 2526($zero)         # Armazenar o valor do registrador $ra no endereço de memória 2526
+    sw $sp 2527($zero)          # Armazenar o valor do registrador $pc no endereço de memória 2527
+    sw $fp 2528($zero)          # Armazenar o valor do registrador $hi no endereço de memória 2528
+    sw $ra 2529($zero)          # Armazenar o valor do registrador $lo no endereço de memória 2529
+    sw $pc 2530($zero)          # Armazenar o valor do registrador $sp no endereço de memória 2530
+    sw $temp 2531($zero)        # Armazenar o valor do registrador $ra no endereço de memória 2531
+
