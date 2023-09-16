@@ -53,11 +53,11 @@ The instruction set is composed of 16 instructions, each with a different opcode
 | `subi` | `001001` | I | Subtracts a register and a constant and stores the result in a register. | `subi $rt $rs constant` |
 | `andi` | `001100` | I | Performs a bitwise AND operation on a register and a constant and stores the result in a register. | `andi $rt $rs constant` |
 | `ori` | `001101` | I | Performs a bitwise OR operation on a register and a constant and stores the result in a register. | `ori $rt $rs constant` |
-| `xori` | `001110` | I | Performs a bitwise XOR operation on a register and a constant and stores the result in a register. | `xori $rt $rs constant` |
-| `slti` | `001111` | I | Compares a register and a constant and stores the result in a register. | `slti $rt $rs constant` |
-| `in` | `010000` | I | Reads a word from the input and stores it in a register. | `in $rt $zero 0` |
-| `out` | `010001` | I | Writes a word from a register to the output. | `out $zero $rs 0` |
-| `disp` | `010010` | I | Display the selected message in the LCD display | `disp $rt $rs numberofmessage` |
+| `xori` | `101101` | I | Performs a bitwise XOR operation on a register and a constant and stores the result in a register. | `xori $rt $rs constant` |
+| `slti` | `001010` | I | Compares a register and a constant and stores the result in a register. | `slti $rt $rs constant` |
+| `in` | `011111` | I | Reads a word from the input and stores it in a register. | `in $rt $zero 0` |
+| `out` | `011110` | I | Writes a word from a register to the output. | `out $zero $rs 0` |
+| `disp` | `111110` | I | Display the selected message in the LCD display | `disp $rt $rs numberofmessage` |
 | `j` | `000010` | J | Jumps to a label. | `j label` |
 | `jal` | `000011` | J | Jumps to a label and stores the address of the next instruction in `$ra` register. | `jal label` |
 | `halt` | `111111` | J | Stops the execution of the program. | `halt` |
