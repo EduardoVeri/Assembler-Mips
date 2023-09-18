@@ -13,7 +13,7 @@ The operating system includes a process manager capable of running programs in r
 
 ## Usage Instructions
 
-1. Compile the reduced MIPS Assembly code using a suitable assembler for your environment.
+1. Compile the reduced MIPS Assembly code using the assembler in this repository (see [src]).
 2. Load the generated code into the MIPS processor's memory.
 3. Execute the operating system.
 
