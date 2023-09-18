@@ -59,7 +59,7 @@ instr_I = {
     'out': '011110',
     'subi': '001001',
     'disp': '111110',
-    'wait': '100100'
+    'pc': '100100'
 }
 
 instr_J = {
@@ -202,7 +202,7 @@ def bin_I(arq, tokens, linha):
 def bin_J(arq, tokens, linha):
     if tokens[0] == 'halt':
         # Escrevendo o código em linguagem de máquina no arquivo de saída
-        arq.write(instr_J[tokens[0]] + '00000000000000000000000000' + '\n')
+        arq.write(instr_J[tokens[0]] + 26*'0' + '\n')
         return
     
     # Verificando se o número de tokens está correto
@@ -226,17 +226,46 @@ def bin_J(arq, tokens, linha):
 
 if __name__ == '__main__':
     # Abrindo o arquivo .txt com o código fonte
+    
+    name_arq_in = None
+    name_arq_out = None
+    
+    if len(sys.argv) == 1:
+        name_arq_in = "input.txt"
+        name_arq_out = "output.txt"
+        
+    elif len(sys.argv) == 3:
+        if "-i" in sys.argv:
+            name_arq_in = sys.argv[sys.argv.index("-i") + 1]
+            name_arq_out = "output.txt"
+        elif "-o" in sys.argv:
+            name_arq_in = "input.txt"
+            name_arq_out = sys.argv[sys.argv.index("-o") + 1]
+        else:
+            name_arq_in = sys.argv[1]
+            name_arq_out = sys.argv[2]
+            
+    elif "-i" in sys.argv and  "-o" in sys.argv:
+        name_arq_in = sys.argv[sys.argv.index("-i") + 1]
+        name_arq_out = sys.argv[sys.argv.index("-o") + 1]
+        
+    else:
+        print("Argumentos inválidos!")
+        print("Use: python assembler.py -i <input_file> -o <output_file>")
+        print("Ou: python assembler.py <input_file> <output_file>")
+        sys.exit()
+    
     try:
-        arq_in = open("/home/eduardo/Documents/Lab. SO/system_operational.txt", 'r')
+        arq_in = open(name_arq_in, 'r')
     except:
-        print('Erro ao abrir o arquivo! Arquivo não encontrado')
+        print(f'Erro ao abrir o arquivo! Arquivo "{name_arq_in}" não encontrado')
         sys.exit()
 
     # Abrindo o arquivo .txt para escrever o código em linguagem de máquina
     try:
-        arq_out = open("bin.txt", 'w')
+        arq_out = open(name_arq_out, 'w')
     except:
-        print('Erro ao abrir o arquivo de saída!')
+        print(f'Erro ao abrir o arquivo de saída! Arquivo "{name_arq_out}" não encontrado')
         sys.exit()
 
     tokens_list = []
@@ -277,7 +306,7 @@ if __name__ == '__main__':
         elif tokens[0] in instr_J:
             bin_J(arq_out, tokens, linha)
         elif tokens[0] in label:
-            arq_out.write('00000011111111111111100000100000\n')
+            arq_out.write('00000011111111111111100000100000\n') # NOP
         else:
             print('Erro de sintaxe na linha', linha)
             print('Instrução inválida!')
