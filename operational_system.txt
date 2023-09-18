@@ -6,7 +6,7 @@
 # O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
-%define eduardo 10
+%define contexto 2500
 
 # TODO: Quando tiver uma interrupção, seja de relógio ou de halt, basta dar um jal para a função que salva o contexto do programa atual 
 # e passa o controle para o sistema operacional. Ai o jal vai salvar o PC atual no registrador $ra e vai pular para a área do sistema operacional
@@ -22,13 +22,13 @@ main:
 
 escolha_1:                      # Executar um programa em Assembly MIPS reduzida
     disp $zero $zero 2          # Imprimir no display os programas disponíveis para o usuário
-    in $t0 $zero eduardo              # Perguntar ao usuário qual programa ele deseja executar
+    in $t0 $zero 0              # Perguntar ao usuário qual programa ele deseja executar
     pc $t2 $zero 0              # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no registrador $t2 
     addi $t2 $t2 6              # Somar o imediato 6 ao valor do pc atual e armazenar no registrador $t2
-    sw $t2 2500($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2500
+    sw $t2 contexto($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2500
     ori $t3 $zero 250           # Carregar o valor 250 no registrador $t0
     mult $t1 $t0 $t3            # Multiplicar o valor do registrador $t0 pelo valor do registrador $t1
-    jalr $zero $t1 $zero         # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
+    jalr $zero $t1 $zero        # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
     add $zero $zero $zero       # nop (no operation)
     j main                      # Volta para o início do programa
 
@@ -40,37 +40,37 @@ escolha_2:                      # Executar vários programas com preempção
 
 
 salva_contexto:
-    sw $t0 2501($zero)          # Armazenar o valor do registrador $t0 no endereço de memória 2501
-    sw $t1 2502($zero)          # Armazenar o valor do registrador $t1 no endereço de memória 2502
-    sw $t2 2503($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2503
-    sw $t3 2504($zero)          # Armazenar o valor do registrador $t3 no endereço de memória 2504
-    sw $t4 2505($zero)                                      
-    sw $t5 2506($zero)                                      
-    sw $t6 2507($zero)                                      
-    sw $t7 2508($zero)                                      
-    sw $t8 2509($zero)                                      
-    sw $t9 2510($zero)                                      
-    sw $t10 2511($zero)                                     
-    sw $t11 2512($zero)                                     
-    sw $t12 2513($zero)                                     
-    sw $t13 2514($zero)                                     
-    sw $t14 2515($zero)                                     
-    sw $t15 2516($zero)                                     
-    sw $t16 2517($zero)                                     
-    sw $t17 2518($zero)                                     
-    sw $t18 2519($zero)                                     
-    sw $t19 2520($zero)                                     
-    sw $t20 2521($zero)                                     
-    sw $t21 2522($zero)                                     
-    sw $t22 2523($zero)                                     
-    sw $t23 2524($zero)                                     
-    sw $t24 2525($zero)                                     
-    sw $t25 2526($zero)                                     
-    sw $sp 2527($zero)                                      
-    sw $fp 2528($zero)          
-    sw $ra 2529($zero)          
-    sw $pilha 2530($zero)          
-    sw $temp 2531($zero)        
+    sw $t0 contexto($zero)          # Armazenar o valor do registrador $t0 no endereço de memória 2501
+    sw $t1 contexto($zero)          # Armazenar o valor do registrador $t1 no endereço de memória 2502
+    sw $t2 contexto($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2503
+    sw $t3 contexto($zero)          # Armazenar o valor do registrador $t3 no endereço de memória 2504
+    sw $t4 contexto($zero)                                      
+    sw $t5 contexto($zero)                                      
+    sw $t6 contexto($zero)                                      
+    sw $t7 contexto($zero)                                      
+    sw $t8 contexto($zero)                                      
+    sw $t9 contexto($zero)                                      
+    sw $t10 contexto($zero)                                     
+    sw $t11 contexto($zero)                                     
+    sw $t12 contexto($zero)                                     
+    sw $t13 contexto($zero)                                     
+    sw $t14 contexto($zero)                                     
+    sw $t15 contexto($zero)                                     
+    sw $t16 contexto($zero)                                     
+    sw $t17 contexto($zero)                                     
+    sw $t18 contexto($zero)                                     
+    sw $t19 contexto($zero)                                     
+    sw $t20 contexto($zero)                                     
+    sw $t21 contexto($zero)                                     
+    sw $t22 contexto($zero)                                     
+    sw $t23 contexto($zero)                                     
+    sw $t24 contexto($zero)                                     
+    sw $t25 contexto($zero)                                     
+    sw $sp  contexto($zero)                                      
+    sw $fp  contexto($zero)          
+    sw $ra  contexto($zero)          
+    sw $pilha contexto($zero)          
+    sw $temp contexto($zero)        
 
 carrega_contexto:
     lw $t0 2501($zero)          # Carregar o valor do endereço de memória 2501 no registrador $t0
