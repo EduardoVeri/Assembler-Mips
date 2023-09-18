@@ -6,32 +6,35 @@
 # O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
+#%define 
+
+# TODO: Quando tiver uma interrupção, seja de relógio ou de halt, basta dar um jal para a função que salva o contexto do programa atual 
+# e passa o controle para o sistema operacional. Ai o jal vai salvar o PC atual no registrador $ra e vai pular para a área do sistema operacional
+# que vai decidir o que fazer (pode ser uma troca de contexto ou ver se o programa já acabou)
+
 main:
     ori $t1 $zero 1             # Carregar o valor 1 no registrador $t1
-    disp $zero $zero 1         # Imprimir no display as opções disponíveis para o usuário
+    disp $zero $zero 1          # Imprimir no display as opções disponíveis para o usuário
     in $t0 $zero 0              # Perguntar ao usuário se ele deseja executar um programa em Assembly MIPS reduzida ou vários programas com preempção
     beq $t0 $zero escolha_1     # Se o usuário digitar 1, executar um programa em Assembly MIPS reduzida
     beq $t0 $t1 escolha_2       # Se o usuário digitar 2, executar vários programas com preempção
     bne $zero $t1 main          # Se o usuário digitar qualquer outro valor, voltar para o início do programa
 
 escolha_1:                      # Executar um programa em Assembly MIPS reduzida
-    #disp #zero $zero 2         # Imprimir no display os programas disponíveis para o usuário
+    disp $zero $zero 2          # Imprimir no display os programas disponíveis para o usuário
     in $t0 $zero 0              # Perguntar ao usuário qual programa ele deseja executar
-    #hd $t1 $t0 1               # Carregar o programa escolhido pelo usuário na memória de dados 
-    #mem $t1 $zero 250          # Carregar o programa escolhido pelo usuário na memória de instruções
-    addi $t2 $pc 3              # Somar o imediato 3 ao valor do pc atual e armazenar no registrador $t2
+    pc $t2 $zero 0              # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no registrador $t2 
+    addi $t2 $t2 6              # Somar o imediato 6 ao valor do pc atual e armazenar no registrador $t2
     sw $t2 2500($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2500
-    #pc $zero $zero 250         # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
-    
-
-
+    ori $t3 $zero 250           # Carregar o valor 250 no registrador $t0
+    mult $t1 $t0 $t3            # Multiplicar o valor do registrador $t0 pelo valor do registrador $t1
+    jar $zero $t1 $zero         # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
+    add $zero $zero $zero       # nop (no operation)
     j main                      # Volta para o início do programa
 
 escolha_2:                      # Executar vários programas com preempção
 
     jal salva_contexto          # Salvar o contexto do programa atual
-
-    
 
     j main                      # Volta para o início do programa
 
@@ -41,31 +44,63 @@ salva_contexto:
     sw $t1 2502($zero)          # Armazenar o valor do registrador $t1 no endereço de memória 2502
     sw $t2 2503($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2503
     sw $t3 2504($zero)          # Armazenar o valor do registrador $t3 no endereço de memória 2504
-    sw $t4 2505($zero)          # Armazenar o valor do registrador $t4 no endereço de memória 2505
-    sw $t5 2506($zero)          # Armazenar o valor do registrador $t5 no endereço de memória 2506
-    sw $t6 2507($zero)          # Armazenar o valor do registrador $t6 no endereço de memória 2507
-    sw $t7 2508($zero)          # Armazenar o valor do registrador $t7 no endereço de memória 2508
-    sw $t8 2509($zero)          # Armazenar o valor do registrador $t8 no endereço de memória 2509
-    sw $t9 2510($zero)          # Armazenar o valor do registrador $t9 no endereço de memória 2510
-    sw $t10 2511($zero)         # Armazenar o valor do registrador $s0 no endereço de memória 2511
-    sw $t11 2512($zero)         # Armazenar o valor do registrador $s1 no endereço de memória 2512
-    sw $t12 2513($zero)         # Armazenar o valor do registrador $s2 no endereço de memória 2513
-    sw $t13 2514($zero)         # Armazenar o valor do registrador $s3 no endereço de memória 2514
-    sw $t14 2515($zero)         # Armazenar o valor do registrador $s4 no endereço de memória 2515
-    sw $t15 2516($zero)         # Armazenar o valor do registrador $s5 no endereço de memória 2516
-    sw $t16 2517($zero)         # Armazenar o valor do registrador $s6 no endereço de memória 2517
-    sw $t17 2518($zero)         # Armazenar o valor do registrador $s7 no endereço de memória 2518
-    sw $t18 2519($zero)         # Armazenar o valor do registrador $s8 no endereço de memória 2519
-    sw $t19 2520($zero)         # Armazenar o valor do registrador $s9 no endereço de memória 2520
-    sw $t20 2521($zero)         # Armazenar o valor do registrador $k0 no endereço de memória 2521
-    sw $t21 2522($zero)         # Armazenar o valor do registrador $k1 no endereço de memória 2522
-    sw $t22 2523($zero)         # Armazenar o valor do registrador $gp no endereço de memória 2523
-    sw $t23 2524($zero)         # Armazenar o valor do registrador $sp no endereço de memória 2524
-    sw $t24 2525($zero)         # Armazenar o valor do registrador $fp no endereço de memória 2525
-    sw $t25 2526($zero)         # Armazenar o valor do registrador $ra no endereço de memória 2526
-    sw $sp 2527($zero)          # Armazenar o valor do registrador $pc no endereço de memória 2527
-    sw $fp 2528($zero)          # Armazenar o valor do registrador $hi no endereço de memória 2528
-    sw $ra 2529($zero)          # Armazenar o valor do registrador $lo no endereço de memória 2529
-    sw $pc 2530($zero)          # Armazenar o valor do registrador $sp no endereço de memória 2530
-    sw $temp 2531($zero)        # Armazenar o valor do registrador $ra no endereço de memória 2531
+    sw $t4 2505($zero)                                      
+    sw $t5 2506($zero)                                      
+    sw $t6 2507($zero)                                      
+    sw $t7 2508($zero)                                      
+    sw $t8 2509($zero)                                      
+    sw $t9 2510($zero)                                      
+    sw $t10 2511($zero)                                     
+    sw $t11 2512($zero)                                     
+    sw $t12 2513($zero)                                     
+    sw $t13 2514($zero)                                     
+    sw $t14 2515($zero)                                     
+    sw $t15 2516($zero)                                     
+    sw $t16 2517($zero)                                     
+    sw $t17 2518($zero)                                     
+    sw $t18 2519($zero)                                     
+    sw $t19 2520($zero)                                     
+    sw $t20 2521($zero)                                     
+    sw $t21 2522($zero)                                     
+    sw $t22 2523($zero)                                     
+    sw $t23 2524($zero)                                     
+    sw $t24 2525($zero)                                     
+    sw $t25 2526($zero)                                     
+    sw $sp 2527($zero)                                      
+    sw $fp 2528($zero)          
+    sw $ra 2529($zero)          
+    sw $pilha 2530($zero)          
+    sw $temp 2531($zero)        
 
+carrega_contexto:
+    lw $t0 2501($zero)          # Carregar o valor do endereço de memória 2501 no registrador $t0
+    lw $t1 2502($zero)          # Carregar o valor do endereço de memória 2502 no registrador $t1
+    lw $t2 2503($zero)          # Carregar o valor do endereço de memória 2503 no registrador $t2
+    lw $t3 2504($zero)          # Carregar o valor do endereço de memória 2504 no registrador $t3
+    lw $t4 2505($zero)                                      
+    lw $t5 2506($zero)                                      
+    lw $t6 2507($zero)                                      
+    lw $t7 2508($zero)                                      
+    lw $t8 2509($zero)                                      
+    lw $t9 2510($zero)                                      
+    lw $t10 2511($zero)                                     
+    lw $t11 2512($zero)                                     
+    lw $t12 2513($zero)                                     
+    lw $t13 2514($zero)                                     
+    lw $t14 2515($zero)                                     
+    lw $t15 2516($zero)                                     
+    lw $t16 2517($zero)                                     
+    lw $t17 2518($zero)                                     
+    lw $t18 2519($zero)                                     
+    lw $t19 2520($zero)                                     
+    lw $t20 2521($zero)                                     
+    lw $t21 2522($zero)                                     
+    lw $t22 2523($zero)                                     
+    lw $t23 2524($zero)                                     
+    lw $t24 2525($zero)                                     
+    lw $t25 2526($zero)                                     
+    lw $sp 2527($zero)                                      
+    lw $fp 2528($zero)          
+    lw $ra 2529($zero)          
+    lw $pilha 2530($zero)          
+    lw $temp 2531($zero)
