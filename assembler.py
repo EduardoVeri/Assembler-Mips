@@ -152,13 +152,17 @@ def bin_I(arq, tokens, linha):
         arq.write(instr_I[tokens[0]] + reg[tokens[1]] + reg[tokens[2]] + str(tokens[3]) + '\n')
     
     elif tokens[0] in ['lw', 'sw']:
-        # TODO: Verificar esse código 
+
+        
+        if tokens[2] in const:
+            tokens[2] = const[tokens[2]]
+        
         # Verificar se o segundo token é um inteiro:
         if not tokens[2].isdigit():
             print('Erro de sintaxe na linha: ', linha)
             print('Imediato inválido! Não representa um inteiro!')
             sys.exit()
-        
+            
         # Verificar se o inteiro é um número de 16 bits
         if int(tokens[2]) > 65535:
             print('Erro de sintaxe na linha: ', linha)
@@ -177,6 +181,10 @@ def bin_I(arq, tokens, linha):
         # Escrevendo o código em linguagem de máquina no arquivo de saída
         arq.write(instr_I[tokens[0]] + reg[tokens[3]] + reg[tokens[1]] + tokens[2] + '\n')
     else:
+        
+        if tokens[3] in const:
+            tokens[3] = const[tokens[3]]
+            
         # Verificar se o segundo token é um inteiro:
         if not tokens[3].isdigit():
             print('Erro de sintaxe na linha: ', linha)
@@ -252,8 +260,8 @@ if __name__ == '__main__':
         
     else:
         print("Argumentos inválidos!")
-        print("Use: python assembler.py -i <input_file> -o <output_file>")
-        print("Ou: python assembler.py <input_file> <output_file>")
+        print(f"Use: python {sys.argv[0]} -i <input_file> -o <output_file>")
+        print(f"Ou: python {sys.argv[0]} <input_file> <output_file>")
         sys.exit()
     
     try:
@@ -302,8 +310,6 @@ if __name__ == '__main__':
                 tokens_list.append((tokens, str(total_lines) + ": " + linha))
                 total_lines += 1
         
-    print (label)
-    print (const)
     for tokens, linha in tokens_list:
         # Verificando se o primeiro token é uma instrução e qual o seu tipo
         if tokens[0] in funct:
@@ -323,5 +329,5 @@ if __name__ == '__main__':
     arq_in.close()
     arq_out.close()
 
-    print('Arquivo de saída gerado com sucesso!')
+    print('\033[92m','Arquivo de saída gerado com sucesso!', '\033[0m', sep='')
 
