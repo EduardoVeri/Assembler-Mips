@@ -27,7 +27,7 @@ escolha_1:                      # Executar um programa em Assembly MIPS reduzida
     addi $t2 $t2 6              # Somar o imediato 6 ao valor do pc atual e armazenar no registrador $t2
     sw $t2 contexto($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2500
     ori $t3 $zero 250           # Carregar o valor 250 no registrador $t0
-    mult $t1 $t0 $t3            # Multiplicar o valor do registrador $t0 pelo valor do registrador $t1
+    mul $t1 $t0 $t3            # Multiplicar o valor do registrador $t0 pelo valor do registrador $t1
     jalr $zero $t1 $zero        # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
     add $zero $zero $zero       # nop (no operation)
     j main                      # Volta para o início do programa
