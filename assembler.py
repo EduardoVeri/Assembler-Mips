@@ -87,6 +87,7 @@ funct = {
 
 # Dicionário com as labels
 label = {}
+const = {}
 
 
 def bin_R(arq, tokens, linha):
@@ -273,7 +274,6 @@ if __name__ == '__main__':
     total_lines = 0
     # Lendo o arquivo .txt com o código fonte
     for linha in arq_in:
-        total_lines += 1
         # Removendo os espaços em branco
         linha = linha.strip()
 
@@ -290,13 +290,20 @@ if __name__ == '__main__':
                 # Adicionando a label no dicionário
                 label[linha[:-1]] = total_lines
                 tokens_list.append(([linha[:-1]], str(total_lines) + ": " + linha))
+                total_lines += 1
             # Verificando se a linha é uma instrução
+            elif linha[0] == '%':
+                # Adicionando a constante no dicionário: Modo de usar: %define constante valor
+                tokens = list(filter(None, re.split(r'\s+|\(|\)', linha)))
+                const[tokens[1]] = tokens[2]
             else:
                 # Separando a linha em tokens
                 tokens = list(filter(None, re.split(r'\s+|\(|\)', linha)))
                 tokens_list.append((tokens, str(total_lines) + ": " + linha))
+                total_lines += 1
         
-
+    print (label)
+    print (const)
     for tokens, linha in tokens_list:
         # Verificando se o primeiro token é uma instrução e qual o seu tipo
         if tokens[0] in funct:
