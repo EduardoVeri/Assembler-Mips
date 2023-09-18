@@ -1,6 +1,10 @@
 # Reduced-Functionality MIPS Processor Operating System
 
-This is a simplified operating system designed for a MIPS processor with reduced functionality. The operating system provides a command prompt that allows the user to choose between two options:
+This is a simplified operating system designed for a MIPS processor with reduced functionality. 
+The MIPS processor used here was created by me as part of a university project for the course "Computer Architecture and Organization Lab" at UNIFESP.
+The Operational System was created by me as part of a university project for the course "Operating Systems Lab" at UNIFESP.
+
+The operating system provides a command prompt that allows the user to choose between two options:
 
 1. Execute a program in reduced MIPS Assembly.
 2. Execute multiple programs with preemption.
