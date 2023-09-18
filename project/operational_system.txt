@@ -39,6 +39,10 @@ escolha_2:                      # Executar vários programas com preempção
     j main                      # Volta para o início do programa
 
 
+interrupcao:
+    disp $zero $zero 3          # Imprimir no display que houve uma interrupção
+    lw $t0 contexto($zero)      # Carregar o valor do endereço de memória 2500 no registrador $t0
+
 salva_contexto:
     sw $t0 contexto($zero)          # Armazenar o valor do registrador $t0 no endereço de memória 2501
     sw $t1 contexto($zero)          # Armazenar o valor do registrador $t1 no endereço de memória 2502
