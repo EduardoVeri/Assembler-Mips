@@ -70,6 +70,23 @@ Labels are used to mark the beginning of a block of code. They are used by the a
 label:
 ```
 
+## Comments
+
+Comments are used to document the code. They can be declared at the end of a line or in a separate line. The following example shows how to declare a comment:
+
+```assembly
+# This is a comment
+add $t0 $t1 $t2 # This is another comment
+```
+
+## Defines
+
+Defines are used to declare constants. The directive `%define` is used to declare a constant. The following example shows how to declare a constant:
+
+```assembly
+%define constant 10
+```
+
 ## Registers
 
 The MIPS used here has 32 registers, each 32 bits wide. The following table shows the registers and their numbers:
