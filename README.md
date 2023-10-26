@@ -43,7 +43,7 @@ The instruction set is composed of 16 instructions, each with a different opcode
 | `srl` | `000000` | R | Shifts a register right by a specified amount and stores the result in a register. | `Only the compiler can use` |
 | `div` | `000000` | R | Divides two registers and stores the result in a register. | `div $rd $rs $rt` |
 | `mul` | `000000` | R | Multiplies two registers and stores the result in a register. | `mult $rd $rs $rt` |
-| `jr` | `000000` | R | Jumps to the address stored in a register. | `jr $rs` |
+| `jr` | `000000` | R | Jumps to the address stored in a register. | `jr $zero $rs $zero` |
 | `jalr` | `000000` | R | Jumps to the address stored in a register and stores the address of the next instruction in `$ra` register . | `jalr $rs` |
 | `lw` | `100011` | I | Loads a word from memory into a register. | `lw $rt offset($rs)` |
 | `sw` | `101011` | I | Stores a word from a register into memory. | `sw $rt offset($rs)` |
