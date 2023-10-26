@@ -7,6 +7,10 @@ e converter para um arquivo .txt com o código em linguagem de máquina."""
 import sys
 import re
 
+green = '\033[92m'
+red = '\033[91m'
+end = '\033[0m'
+
 # Definindo as variáveis globais
 # Dicionário com os registradores
 reg = {
@@ -233,7 +237,7 @@ def bin_J(arq, tokens, linha):
     arq.write(instr_J[tokens[0]] + tokens[1] + '\n')
 
 
-if __name__ == '__main__':
+def main():
     # Abrindo o arquivo .txt com o código fonte
     
     name_arq_in = None
@@ -329,5 +333,9 @@ if __name__ == '__main__':
     arq_in.close()
     arq_out.close()
 
-    print('\033[92m','Arquivo de saída gerado com sucesso!', '\033[0m', sep='')
+    print(green,'Arquivo de saída gerado com sucesso!', end, sep='')
+
+
+if __name__ == '__main__':
+    main()
 
