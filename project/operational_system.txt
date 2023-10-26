@@ -8,9 +8,16 @@
 
 %define contexto 2500
 
-# TODO: Quando tiver uma interrupção, seja de relógio ou de halt, basta dar um jal para a função que salva o contexto do programa atual 
-# e passa o controle para o sistema operacional. Ai o jal vai salvar o PC atual no registrador $ra e vai pular para a área do sistema operacional
-# que vai decidir o que fazer (pode ser uma troca de contexto ou ver se o programa já acabou)
+inicio: 
+    lw $t0 0($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
+    beq $t0 $zero main
+    disp $zero $zero 3          # Imprimir no display que houve uma interrupção
+    lw $t0 contexto($zero)
+    jr $zero $t0 $zero
+
+# Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
+ori $t1 $zero 1                 
+sw $t1 0($zero)
 
 main:
     ori $t1 $zero 1             # Carregar o valor 1 no registrador $t1
@@ -25,9 +32,9 @@ escolha_1:                      # Executar um programa em Assembly MIPS reduzida
     in $t0 $zero 0              # Perguntar ao usuário qual programa ele deseja executar
     pc $t2 $zero 0              # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no registrador $t2 
     addi $t2 $t2 6              # Somar o imediato 6 ao valor do pc atual e armazenar no registrador $t2
-    sw $t2 contexto($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2500
+    sw $t2 contexto($zero)      # Armazenar o valor do registrador $t2 no endereço de memória 2500
     ori $t3 $zero 250           # Carregar o valor 250 no registrador $t0
-    mul $t1 $t0 $t3            # Multiplicar o valor do registrador $t0 pelo valor do registrador $t1
+    mul $t1 $t0 $t3             # Multiplicar o valor do registrador $t0 pelo valor do registrador $t1
     jalr $zero $t1 $zero        # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
     add $zero $zero $zero       # nop (no operation)
     j main                      # Volta para o início do programa
@@ -37,11 +44,6 @@ escolha_2:                      # Executar vários programas com preempção
     jal salva_contexto          # Salvar o contexto do programa atual
 
     j main                      # Volta para o início do programa
-
-
-interrupcao:
-    disp $zero $zero 3          # Imprimir no display que houve uma interrupção
-    lw $t0 contexto($zero)      # Carregar o valor do endereço de memória 2500 no registrador $t0
 
 salva_contexto:
     sw $t0 contexto($zero)          # Armazenar o valor do registrador $t0 no endereço de memória 2501
