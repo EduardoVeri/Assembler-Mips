@@ -9,7 +9,7 @@
 %define contexto 2500
 
 inicio: 
-    lw $t0 0($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
+    lw $t0 2000($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
     beq $t0 $zero main
     disp $zero $zero 3          # Imprimir no display que houve uma interrupção
     lw $t0 contexto($zero)
@@ -17,7 +17,7 @@ inicio:
 
     # Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
     ori $t1 $zero 1                 
-    sw $t1 0($zero)
+    sw $t1 2000($zero)
 
 main:
     ori $t1 $zero 1             # Carregar o valor 1 no registrador $t1
