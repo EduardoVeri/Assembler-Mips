@@ -31,13 +31,22 @@ main:
 escolha1:                       
     disp $zero $zero 2             # Imprimir no display os programas disponíveis para o usuário
     in $t0 $zero 0              
+    # Verifica se o valor está entre 1 e 10 (sem usar pseudo-instruções)
+
+    ori $t4 $zero 1               
+    slti $t1 $t0 1                # Se o valor for menor que 0, $t1 = 1
+    slti $t2 $t0 10             # Se o valor for menor que 10, $t2 = 1
+    xori $t2 $t2 1                # Inverte o valor de $t2
+    or $t3 $t1 $t2                # Se $t1 = 1 ou $t2 = 1, $t3 = 1
+    beq $t3 $t4 escolha1          # Se $t3 = 0, o valor está entre 1 e 10
+    
     pc $t2 $zero 0               
     addi $t2 $t2 7              
     sw $t2 contexto($zero)         
     ori $t3 $zero 150              
-    mul $t1 $t0 $t3
+    mul $t4 $t0 $t3
     disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
-    jr $zero $t3 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
+    jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
     add $zero $zero $zero          # nop (no operation)           
     j main                         
 
