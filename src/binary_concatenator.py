@@ -49,26 +49,13 @@ def main():
             count = 0
             for line in content.split("\n"):
                 if line != "":
-                    
-                    '''Verificar os 6 primeiros bits do opcode para saber se é um jump ou branch
-                    Caso seja, alterar os últimos 26 bits para somar + 150 * (número de arquivos concatenados até o momento)'''
-
                     if line[:6] in ["000010", "000011"]:
-                        # print("Linha Antiga Jump:", line)
-                        # print("Opcode:", line[:6])
-                        # print("Jump:", line[6:])
+                        # Get the last 26 bits of the instruction and add 150 * num_files + 1
                         line = line[:6] + "{:026b}".format(int(line[6:], 2) + 150 * num_files + 1)
-                        # print("Linha Nova:", line)
-                        # print()
                     
-                    # Fazer o mesmo com o de cima, porém apenas para os últimos 16 bits
                     if line[:6] in ["000100", "000101"]:
-                        # print("Linha Antiga Branch:", line)
-                        # print("Opcode:", line[:6])
-                        # print("Branch:", line[6:])
+                        # Get the last 16 bits of the instruction and add 150 * num_files + 1
                         line = line[:6] + "{:016b}".format(int(line[6:], 2) + 150 * num_files + 1)
-                        # print("Linha Nova:", line)
-                        # print()
                         
                     count += 1
                     final_file.write(line + "\n")
