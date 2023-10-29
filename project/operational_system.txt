@@ -8,8 +8,7 @@
 
 %define contexto 2500
 
-inicio: 
-    jc $zero $zero 0               
+inicio:              
     lw $t0 2000($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
     out $zero $t0 0                # Imprimir no display o valor do registrador $t0
     beq $t0 $zero main
@@ -45,7 +44,6 @@ main:
 escolha1:                      # Executar um programa em Assembly MIPS reduzida
     disp $zero $zero 2          # Imprimir no display os programas disponíveis para o usuário
     in $t0 $zero 0              # Perguntar ao usuário qual programa ele deseja executar
-    jc $zero $zero 150
     pc $t2 $zero 0              # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no registrador $t2 
     out $zero $t2 0             # Imprimir no display o valor do registrador $t2
     addi $t2 $t2 8              # Somar o imediato 6 ao valor do pc atual e armazenar no registrador $t2
@@ -54,8 +52,7 @@ escolha1:                      # Executar um programa em Assembly MIPS reduzida
     ori $t3 $zero 150           # Carregar o valor 150 no registrador $t3
     mul $t1 $t0 $t3             
     jr $zero $t3 $zero        # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
-    add $zero $zero $zero       # nop (no operation)
-    jc $zero $zero 0            
+    add $zero $zero $zero       # nop (no operation)           
     j main                      # Volta para o início do programa
 
 escolha2:                      # Executar vários programas com preempção
