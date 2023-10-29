@@ -7,6 +7,8 @@ e converter para um arquivo .txt com o código em linguagem de máquina."""
 import sys
 import re
 
+DEBUG = False
+
 green = '\033[92m'
 red = '\033[91m'
 end = '\033[0m'
@@ -63,7 +65,8 @@ instr_I = {
     'out': '011110',
     'subi': '001001',
     'disp': '111110',
-    'pc': '100100'
+    'pc': '100100',
+    'jc': '110100'
 }
 
 instr_J = {
@@ -97,25 +100,25 @@ const = {}
 def bin_R(arq, tokens, linha):
     # Verificando se o número de tokens está correto
     if len(tokens) != 4:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Número de tokens inválido!')
         sys.exit()
     
     # Verificando se o primeiro token é um registrador
     if tokens[1] not in reg:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Registrador 1 inválido!')
         sys.exit()
     
     # Verificando se o segundo token é um registrador
     if tokens[2] not in reg:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Registrador 2 inválido!')
         sys.exit()
     
     # Verificando se o terceiro token é um registrador
     if tokens[3] not in reg:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Registrador 3 inválido!')
         sys.exit()
     
@@ -125,27 +128,27 @@ def bin_R(arq, tokens, linha):
 def bin_I(arq, tokens, linha):
     # Verificando se o número de tokens está correto
     if len(tokens) != 4:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Número de tokens inválido!')
         sys.exit()
     
     # Verificando se o primeiro token é um registrador
     if tokens[1] not in reg:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Registrador 1 inválido!')
         sys.exit()
     
     # Verificando a instrução atual, pois o registrador 2 pode ser um registrador ou um imediato
     if tokens[0] in ['beq', 'bne']:
         if tokens[2] not in reg:
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Registrador 2 inválido!')
             sys.exit()
         
         # TODO: Fazer uma varredura no arquivo inteiro para armazenar as labels e seus endereços 
         # Verificando se o terceiro token é uma label
         if tokens[3] not in label:
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Label inválida!')
             sys.exit()
         
@@ -163,19 +166,19 @@ def bin_I(arq, tokens, linha):
         
         # Verificar se o segundo token é um inteiro:
         if not tokens[2].isdigit():
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Imediato inválido! Não representa um inteiro!')
             sys.exit()
             
         # Verificar se o inteiro é um número de 16 bits
         if int(tokens[2]) > 65535:
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Imediato inválido! Não representa um número de 16 bits!')
             sys.exit()
         
         # Verificar se o terceiro token é um registrador
         if tokens[3] not in reg:
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Registrador 3 inválido!')
             sys.exit()
         
@@ -191,18 +194,18 @@ def bin_I(arq, tokens, linha):
             
         # Verificar se o segundo token é um inteiro:
         if not tokens[3].isdigit():
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Imediato inválido! Não representa um inteiro!')
             sys.exit()
         
         # Verificar se o inteiro é um número de 16 bits
         if int(tokens[3]) > 65535:
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Imediato inválido! Não representa um número de 16 bits!')
             sys.exit()
 
         if tokens[2] not in reg:
-            print('Erro de sintaxe na linha: ', linha)
+            print('Erro de sintaxe na linha', linha)
             print('Registrador 2 inválido!')
             sys.exit()
 
@@ -220,13 +223,13 @@ def bin_J(arq, tokens, linha):
     
     # Verificando se o número de tokens está correto
     if len(tokens) != 2:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Número de tokens inválido!')
         sys.exit()
 
     # Verificando se o primeiro token é uma label
     if tokens[1] not in label:
-        print('Erro de sintaxe na linha: ', linha)
+        print('Erro de sintaxe na linha', linha)
         print('Label inválida!')
         sys.exit()
     
@@ -316,6 +319,12 @@ def main():
         
     for tokens, linha in tokens_list:
         # Verificando se o primeiro token é uma instrução e qual o seu tipo
+        
+        if(DEBUG):
+            # Imprimir no arquivo o número exato de espaços para que todos fiquem na mesma linha
+            arq_out.write(linha + (40 - len(linha))*' ')
+            
+        
         if tokens[0] in funct:
             bin_R(arq_out, tokens, linha)
         elif tokens[0] in instr_I:
