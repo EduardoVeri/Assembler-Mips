@@ -10,52 +10,39 @@
 
 inicio:              
     lw $t0 2000($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
-    out $zero $t0 0                # Imprimir no display o valor do registrador $t0
     beq $t0 $zero main
-    disp $zero $zero 3          # Imprimir no display que houve uma interrupção
+    disp $zero $zero 3             # Imprimir no display que houve uma interrupção
     lw $t0 contexto($zero)
-    out $zero $t0 0
     jr $zero $t0 $zero
 
 main:
-    # Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
-    ori $t1 $zero 1                 
-    sw $t1 2000($zero)
-    out $zero $zero 0           # Imprimir no display o valor 0
-    out $zero $t1 0             # Imprimir no display o valor do registrador $t1
-    disp $zero $zero 1          # Imprimir no display as opções disponíveis para o usuário
-    in $t0 $zero 0              # Perguntar ao usuário se ele deseja executar um programa em Assembly MIPS reduzida ou vários programas com preempção
-    out $zero $t0 0             # Imprimir no display o valor digitado pelo usuário
-    slt $t2 $t0 $zero
-    slt $t2 $zero $t0      
-    xori $t2 $t2 1       
-    beq $t2 $zero if1     # Se o usuário digitar 1, executar um programa em Assembly MIPS reduzida
-    j escolha1
+    ori $t1 $zero 1
+    ori $t2 $zero 2                    
+    sw $t1 2000($zero)             # Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
 
-    if1:
-        slt $t2 $t0 $t1
-        slt $t2 $t1 $t0
-        xori $t2 $t2 1  
-        beq $t2 $zero if2       # Se o usuário digitar 2, executar vários programas com preempção
-        j escolha2
-    if2:
-        bne $zero $t1 main          # Se o usuário digitar qualquer outro valor, voltar para o início do programa
+    disp $zero $zero 1             # Imprimir no display as opções disponíveis para o usuário
+    in $t0 $zero 0              
 
-escolha1:                      # Executar um programa em Assembly MIPS reduzida
-    disp $zero $zero 2          # Imprimir no display os programas disponíveis para o usuário
-    in $t0 $zero 0              # Perguntar ao usuário qual programa ele deseja executar
-    pc $t2 $zero 0              # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no registrador $t2 
-    out $zero $t2 0             # Imprimir no display o valor do registrador $t2
-    addi $t2 $t2 8              # Somar o imediato 6 ao valor do pc atual e armazenar no registrador $t2
-    out $zero $t2 0             # Imprimir no display o valor do registrador $t2
-    sw $t2 contexto($zero)      # Armazenar o valor do registrador $t2 no endereço de memória 2500
-    ori $t3 $zero 150           # Carregar o valor 150 no registrador $t3
-    mul $t1 $t0 $t3             
-    jr $zero $t3 $zero        # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
-    add $zero $zero $zero       # nop (no operation)           
-    j main                      # Volta para o início do programa
+    beq $t0 $t1 escolha1           # Se o usuário digitar 1, executar um programa em Assembly MIPS reduzida
+    beq $t0 $t2 escolha2           # Se o usuário digitar 2, executar vários programas com preempção
+    j main                         # Volta para o início do programa
 
-escolha2:                      # Executar vários programas com preempção
+# Executar um programa em Assembly MIPS reduzida
+escolha1:                       
+    disp $zero $zero 2             # Imprimir no display os programas disponíveis para o usuário
+    in $t0 $zero 0              
+    pc $t2 $zero 0               
+    addi $t2 $t2 7              
+    sw $t2 contexto($zero)         
+    ori $t3 $zero 150              
+    mul $t1 $t0 $t3
+    disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
+    jr $zero $t3 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
+    add $zero $zero $zero          # nop (no operation)           
+    j main                         
+
+# Executar vários programas com preempção
+escolha2:                      
 
     jal salva_contexto          # Salvar o contexto do programa atual
 
