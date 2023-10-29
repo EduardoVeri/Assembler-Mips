@@ -305,7 +305,7 @@ def main():
                 label[linha[:-1]] = total_lines
                 tokens_list.append(([linha[:-1]], str(total_lines) + ": " + linha))
                 total_lines += 1
-            # Verificando se a linha é uma instrução
+            # Verificando se a linha é uma definição de constante
             elif linha[0] == '%':
                 # Adicionando a constante no dicionário: Modo de usar: %define constante valor
                 tokens = list(filter(None, re.split(r'\s+|\(|\)', linha)))
