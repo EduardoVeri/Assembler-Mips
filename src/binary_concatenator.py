@@ -38,7 +38,10 @@ def main():
         # Sort the files in "files" list by the order in file_order dict
         files.sort(key=lambda x: file_order[x.split(".")[0]])
 
+        num_files = 0
         for arq in files:
+            num_files += 1
+            
             print("Concatenando arquivo:", arq, '...')
             with open("project/input/" + arq, "r") as open_file:
                 content = open_file.read()
@@ -46,6 +49,27 @@ def main():
             count = 0
             for line in content.split("\n"):
                 if line != "":
+                    
+                    '''Verificar os 6 primeiros bits do opcode para saber se é um jump ou branch
+                    Caso seja, alterar os últimos 26 bits para somar + 150 * (número de arquivos concatenados até o momento)'''
+
+                    if line[:6] in ["000010", "000011"]:
+                        # print("Linha Antiga Jump:", line)
+                        # print("Opcode:", line[:6])
+                        # print("Jump:", line[6:])
+                        line = line[:6] + "{:026b}".format(int(line[6:], 2) + 150 * num_files + 1)
+                        # print("Linha Nova:", line)
+                        # print()
+                    
+                    # Fazer o mesmo com o de cima, porém apenas para os últimos 16 bits
+                    if line[:6] in ["000100", "000101"]:
+                        # print("Linha Antiga Branch:", line)
+                        # print("Opcode:", line[:6])
+                        # print("Branch:", line[6:])
+                        line = line[:6] + "{:016b}".format(int(line[6:], 2) + 150 * num_files + 1)
+                        # print("Linha Nova:", line)
+                        # print()
+                        
                     count += 1
                     final_file.write(line + "\n")
 
