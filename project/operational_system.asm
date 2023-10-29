@@ -40,13 +40,13 @@ escolha1:
     or $t3 $t1 $t2                 # Se $t1 = 1 ou $t2 = 1, $t3 = 1
     beq $t3 $t4 escolha1           # Se $t3 = 0, o valor está entre 1 e 10
     
-    pc $t2 $zero 0               
-    addi $t2 $t2 7              
+    pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
+    addi $t2 $t2 7                 # Soma 7 ao valor do pc atual para apontar para o nop
     sw $t2 contexto($zero)         
     ori $t3 $zero 150              
     mul $t4 $t0 $t3
     disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
-    jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado no PC
+    jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado
     add $zero $zero $zero          # nop (no operation)           
     j main                         
 
