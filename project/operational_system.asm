@@ -27,7 +27,7 @@ main:
     beq $t0 $t2 escolha2           # Se o usuário digitar 2, executar vários programas com preempção
     j main                         # Volta para o início do programa
 
-# Executar um programa em Assembly MIPS reduzida
+# Executar um programa
 escolha1:                       
     disp $zero $zero 2             # Imprimir no display os programas disponíveis para o usuário
     in $t0 $zero 0              
