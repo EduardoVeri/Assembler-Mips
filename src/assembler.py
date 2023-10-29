@@ -317,13 +317,11 @@ def main():
                 total_lines += 1
         
     for tokens, linha in tokens_list:
-        # Verificando se o primeiro token é uma instrução e qual o seu tipo
         
         if(DEBUG):
-            # Imprimir no arquivo o número exato de espaços para que todos fiquem na mesma linha
             arq_out.write(linha + (40 - len(linha))*' ')
             
-        
+        # Verificando se o primeiro token é uma instrução e qual o seu tipo
         if tokens[0] in funct:
             bin_R(arq_out, tokens, linha)
         elif tokens[0] in instr_I:
