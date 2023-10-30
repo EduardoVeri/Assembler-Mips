@@ -7,9 +7,11 @@
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
 %define contexto 2500
+%define var_controle 2000
+%define vetor_processos 2001
 
 inicio:              
-    lw $t0 2000($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
+    lw $t0 var_controle($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
     beq $t0 $zero main
     disp $zero $zero 3             # Imprimir no display que houve uma interrupção
     lw $t0 contexto($zero)
@@ -18,7 +20,7 @@ inicio:
 main:
     ori $t1 $zero 1
     ori $t2 $zero 2                    
-    sw $t1 2000($zero)             # Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
+    sw $t1 var_controle($zero)             # Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
 
     disp $zero $zero 1             # Imprimir no display as opções disponíveis para o usuário
     in $t0 $zero 0              
@@ -52,9 +54,50 @@ escolha1:
 
 # Executar vários programas com preempção
 escolha2:                      
+    ori $t0 $zero 0                # i = 0
+    ori $t1 $zero 1                # bool = 1
 
-    jal salva_contexto          # Salvar o contexto do programa atual
+    while1:
+        beq $t1 $zero end_while1       # Se bool = 0, sair do loop
+        disp $zero $zero 2             # Imprimir no display os programas disponíveis para o usuário
+        in $t5 $zero 0
 
+        slt $t2 $t5 $zero
+        xori $t2 $t2 1
+        beq $t2 $zero end_if1
+
+        ori $t2 $zero 10
+        slt $t2 $t2 $t5
+        xori $t2 $t2 1
+        beq $t2 $zero end_if1
+
+        slt $t2 $t5 $zero
+        slt $t2 $zero $t5
+        xori $t2 $t2 1
+        beq $t2 $zero else1
+        add $t1 $zero $zero
+        j end_if1
+
+        else1:
+            sw $t5 vetor_processos($t0)
+            addi $t0 $t0 1
+
+        end_if1: 
+        
+        j while1
+    end_while1:
+    
+    # Esse While deve executar todos os processos em forma de batch
+    ori $t3 $zero 0
+    while2:
+        slt $t2 $t3 $t0
+        beq $t2 $zero end_while2
+        lw $t4 vetor_processos($t3)
+        disp $zero $t4 4               # Imprimir no display o programa escolhido pelo usuário
+        j while2
+
+    end_while2:
+    
     j main                      # Volta para o início do programa
 
 salva_contexto:
