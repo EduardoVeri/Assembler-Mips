@@ -93,7 +93,19 @@ escolha2:
         slt $t2 $t3 $t0
         beq $t2 $zero end_while2
         lw $t4 vetor_processos($t3)
+
+        ori $t6 $zero 150              
+        mul $t7 $t4 $t6
         disp $zero $t4 4               # Imprimir no display o programa escolhido pelo usuário
+
+        pc $t2 $zero 0                 
+        addi $t2 $t2 4               
+        sw $t2 contexto($zero)
+                 
+        jr $zero $t4 $zero
+
+        add $zero $zero $zero          # nop (no operation)
+        addi $t3 $t3 1
         j while2
 
     end_while2:
