@@ -8,7 +8,9 @@
 
 %define contexto 2500
 %define var_controle 2000
-%define vetor_processos 2001
+%define var_i 2001
+%define var_j 2002
+%define vetor_processos 2005
 
 inicio:              
     lw $t0 var_controle($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
@@ -89,23 +91,35 @@ escolha2:
     
     # Esse While deve executar todos os processos em forma de batch
     ori $t3 $zero 0
+    out $zero $t3 0
     while2:
         slt $t2 $t3 $t0
         beq $t2 $zero end_while2
         lw $t4 vetor_processos($t3)
+        out $zero $t4 0
 
         ori $t6 $zero 150              
         mul $t7 $t4 $t6
+        out $zero $t7 0
         disp $zero $t4 4               # Imprimir no display o programa escolhido pelo usuário
+        
+        sw $t3 var_j($zero)
+        sw $t0 var_i($zero)
 
         pc $t2 $zero 0                 
-        addi $t2 $t2 4               
+        addi $t2 $t2 5               
         sw $t2 contexto($zero)
+        out $zero $t2 0
                  
-        jr $zero $t4 $zero
+        jr $zero $t7 $zero             # Carregar programa
 
         add $zero $zero $zero          # nop (no operation)
+
+        lw $t3 var_j($zero)
+        lw $t0 var_i($zero)
+
         addi $t3 $t3 1
+        out $zero $t3 0
         j while2
 
     end_while2:
