@@ -93,7 +93,7 @@ funct = {
     'jalr': '001001'
 }
 
-# Dicionário com as labels
+# Dicionário com as labels e constantes
 label = {}
 const = {}
 
@@ -240,6 +240,8 @@ def bin_J(arq, tokens, linha):
     # Escrevendo o código em linguagem de máquina no arquivo de saída
     arq.write(instr_J[tokens[0]] + tokens[1] + '\n')
 
+def print_nop(arq):
+    arq.write('00000011111111111111100000100000\n')
 
 def main():
     # Abrindo o arquivo .txt com o código fonte
@@ -330,8 +332,8 @@ def main():
             bin_I(arq_out, tokens, linha)
         elif tokens[0] in instr_J:
             bin_J(arq_out, tokens, linha)
-        elif tokens[0] in label:
-            arq_out.write('00000011111111111111100000100000\n') # NOP
+        elif tokens[0] in label or tokens[0] == 'nop':
+            print_nop(arq_out)
         else:
             print('Erro de sintaxe na linha', linha)
             print('Instrução inválida!')

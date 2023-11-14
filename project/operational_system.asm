@@ -51,7 +51,9 @@ escolha1:
     mul $t4 $t0 $t3
     disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
     jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado
-    add $zero $zero $zero          # nop (no operation)           
+
+    nop 
+           
     j main                         
 
 # Executar vários programas com preempção
@@ -113,7 +115,7 @@ escolha2:
                  
         jr $zero $t7 $zero             # Carregar programa
 
-        add $zero $zero $zero          # nop (no operation)
+        nop
 
         lw $t3 var_j($zero)
         lw $t0 var_i($zero)
