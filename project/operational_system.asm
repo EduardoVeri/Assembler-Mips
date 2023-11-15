@@ -10,14 +10,17 @@
 %define var_controle 2000
 %define var_i 2001
 %define var_j 2002
-%define vetor_processos 2005
+%define id_procs 2005
+%define state_procs 2020
 
 inicio:              
-    lw $t0 var_controle($zero)             # Carregar o valor do endereço de memória 2500 no registrador $t0
-    beq $t0 $zero main
+    lw $s0 var_controle($zero)     # Carregar o valor do endereço de memória 2500 no registrador $t0
+    beq $s0 $zero main
     disp $zero $zero 3             # Imprimir no display que houve uma interrupção
-    lw $t0 contexto($zero)
-    jr $zero $t0 $zero
+
+    # Voltar para onde o SO estava executando
+    lw $s0 contexto($zero)
+    jr $zero $s0 $zero
 
 main:
     ori $t1 $zero 1
@@ -66,6 +69,7 @@ escolha2:
         disp $zero $zero 2             # Imprimir no display os programas disponíveis para o usuário
         in $t5 $zero 0
 
+        # Verifica se o valor está entre 1 e 10
         slt $t2 $t5 $zero
         xori $t2 $t2 1
         beq $t2 $zero end_if1
@@ -75,15 +79,20 @@ escolha2:
         xori $t2 $t2 1
         beq $t2 $zero end_if1
 
+        # Verifica se o valor é igual a 0 para sair do loop
         slt $t2 $t5 $zero
         slt $t2 $zero $t5
         xori $t2 $t2 1
         beq $t2 $zero else1
-        add $t1 $zero $zero
+        add $t1 $zero $zero # bool = 0
         j end_if1
 
+        # Salva o id do programa a ser executado
         else1:
-            sw $t5 vetor_processos($t0)
+            sw $t5 id_procs($t0)
+
+            ori $t3 $zero 0
+            sw 
             addi $t0 $t0 1
 
         end_if1: 
@@ -97,7 +106,7 @@ escolha2:
     while2:
         slt $t2 $t3 $t0
         beq $t2 $zero end_while2
-        lw $t4 vetor_processos($t3)
+        lw $t4 id_procs($t3)
         out $zero $t4 0
 
         ori $t6 $zero 150              
