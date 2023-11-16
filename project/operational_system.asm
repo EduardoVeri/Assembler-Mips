@@ -6,12 +6,15 @@
 # O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
-%define contexto 2500
+%define pc_so 2500
 %define var_controle 2000
-%define var_i 2001
-%define var_j 2002
+%define var_total 2001
+%define var_i 2002
+%define buffer 2003
+%define interruption 2004
 %define id_procs 2005
 %define state_procs 2020
+%define contexto 2035
 
 inicio:              
     lw $s0 var_controle($zero)     # Carregar o valor do endereço de memória 2500 no registrador $t0
@@ -19,7 +22,7 @@ inicio:
     disp $zero $zero 3             # Imprimir no display que houve uma interrupção
 
     # Voltar para onde o SO estava executando
-    lw $s0 contexto($zero)
+    lw $s0 pc_so($zero)
     jr $zero $s0 $zero
 
 main:
@@ -49,7 +52,7 @@ escolha1:
     
     pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
     addi $t2 $t2 7                 # Soma 7 ao valor do pc atual para apontar para o nop
-    sw $t2 contexto($zero)         
+    sw $t2 pc_so($zero)         
     ori $t3 $zero 150              
     mul $t4 $t0 $t3
     disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
@@ -84,15 +87,16 @@ escolha2:
         slt $t2 $zero $t5
         xori $t2 $t2 1
         beq $t2 $zero else1
-        add $t1 $zero $zero # bool = 0
-        j end_if1
+            add $t1 $zero $zero # bool = 0
+            j end_if1
 
         # Salva o id do programa a ser executado
         else1:
-            sw $t5 id_procs($t0)
+            sw $t5 id_procs($t0) # id_procs[i] = input()
 
             ori $t3 $zero 0
-            sw 
+            sw $t3 state_procs($t0) # state_procs[i] = 0 
+
             addi $t0 $t0 1
 
         end_if1: 
@@ -100,105 +104,55 @@ escolha2:
         j while1
     end_while1:
     
-    # Esse While deve executar todos os processos em forma de batch
-    ori $t3 $zero 0
-    out $zero $t3 0
     while2:
-        slt $t2 $t3 $t0
-        beq $t2 $zero end_while2
-        lw $t4 id_procs($t3)
-        out $zero $t4 0
+        lw $t0 total($zero)
+        slt $t1 $t0 $zero
+        beq $t1 $zero end_while2
 
-        ori $t6 $zero 150              
-        mul $t7 $t4 $t6
-        out $zero $t7 0
-        disp $zero $t4 4               # Imprimir no display o programa escolhido pelo usuário
+        lw $t1 state_procs($zero) # state = state_procs[0]
+        lw $t2 id_procs($zero) # id = id_procs[0]
+
+        ori $t4 $zero 1
+        slt $t3 $t1 $t2
+        slt $t3 $t2 $t1
+        xori $t3 $t3 1
+        beq $t3 $zero else2
+            # TODO: Aqui eu preciso pegar da memória o valor do pc do programa que está sendo executado salvo na memória
+            add $t6 $zero $t2 # $t6 = id
+            subi $t6 $t6 1
+            ori $t4 $zero 33 
+            mul $t3 $t6 $t4
+
+            lw $t3 contexto($t3) # 33*ID + 2035
+
+            j end_if1
+
+        else2:
+            # Caso o programa não esteja sendo executado, executar o programa a partir do seu pc inicial
+            ori $t3 $zero 150              
+            mul $t3 $t2 $t3
+
+        end_if1:
+
+        # Calcula o valor inicial do frame de memória do programa
+        ori $t5 $zero 500
+        mul $t5 $t2 $t5
+        add $s0 $zero $t5 # $s0 = pc
+
+        # Salva o valor do pc do SO em um registrador
         
-        sw $t3 var_j($zero)
-        sw $t0 var_i($zero)
+        pc $t5 $zero 0
+        addi $t5 $t5 5
+        sw $t5 pc_so($zero)
+        disp $zero $t2 4             # Imprimir no display o programa escolhido pelo usuário
 
-        pc $t2 $zero 0                 
-        addi $t2 $t2 5               
-        sw $t2 contexto($zero)
-        out $zero $t2 0
-                 
-        jr $zero $t7 $zero             # Carregar programa
+        jr $zero $t3 $zero 
 
-        nop
+        nop 
 
-        lw $t3 var_j($zero)
-        lw $t0 var_i($zero)
+        
 
-        addi $t3 $t3 1
-        out $zero $t3 0
-        j while2
 
     end_while2:
     
     j main                      # Volta para o início do programa
-
-salva_contexto:
-    sw $t0 contexto($zero)          # Armazenar o valor do registrador $t0 no endereço de memória 2501
-    sw $t1 contexto($zero)          # Armazenar o valor do registrador $t1 no endereço de memória 2502
-    sw $t2 contexto($zero)          # Armazenar o valor do registrador $t2 no endereço de memória 2503
-    sw $t3 contexto($zero)          # Armazenar o valor do registrador $t3 no endereço de memória 2504
-    sw $t4 contexto($zero)                                      
-    sw $t5 contexto($zero)                                      
-    sw $t6 contexto($zero)                                      
-    sw $t7 contexto($zero)                                      
-    sw $t8 contexto($zero)                                      
-    sw $t9 contexto($zero)                                      
-    sw $t10 contexto($zero)                                     
-    sw $t11 contexto($zero)                                     
-    sw $t12 contexto($zero)                                     
-    sw $t13 contexto($zero)                                     
-    sw $t14 contexto($zero)                                     
-    sw $t15 contexto($zero)                                     
-    sw $t16 contexto($zero)                                     
-    sw $t17 contexto($zero)                                     
-    sw $t18 contexto($zero)                                     
-    sw $t19 contexto($zero)                                     
-    sw $t20 contexto($zero)                                     
-    sw $t21 contexto($zero)                                     
-    sw $t22 contexto($zero)                                     
-    sw $t23 contexto($zero)                                     
-    sw $t24 contexto($zero)                                     
-    sw $t25 contexto($zero)                                     
-    sw $sp  contexto($zero)                                      
-    sw $fp  contexto($zero)          
-    sw $ra  contexto($zero)          
-    sw $pilha contexto($zero)          
-    sw $temp contexto($zero)        
-
-carrega_contexto:
-    lw $t0 2501($zero)          # Carregar o valor do endereço de memória 2501 no registrador $t0
-    lw $t1 2502($zero)          # Carregar o valor do endereço de memória 2502 no registrador $t1
-    lw $t2 2503($zero)          # Carregar o valor do endereço de memória 2503 no registrador $t2
-    lw $t3 2504($zero)          # Carregar o valor do endereço de memória 2504 no registrador $t3
-    lw $t4 2505($zero)                                      
-    lw $t5 2506($zero)                                      
-    lw $t6 2507($zero)                                      
-    lw $t7 2508($zero)                                      
-    lw $t8 2509($zero)                                      
-    lw $t9 2510($zero)                                      
-    lw $t10 2511($zero)                                     
-    lw $t11 2512($zero)                                     
-    lw $t12 2513($zero)                                     
-    lw $t13 2514($zero)                                     
-    lw $t14 2515($zero)                                     
-    lw $t15 2516($zero)                                     
-    lw $t16 2517($zero)                                     
-    lw $t17 2518($zero)                                     
-    lw $t18 2519($zero)                                     
-    lw $t19 2520($zero)                                     
-    lw $t20 2521($zero)                                     
-    lw $t21 2522($zero)                                     
-    lw $t22 2523($zero)                                     
-    lw $t23 2524($zero)                                     
-    lw $t24 2525($zero)                                     
-    lw $t25 2526($zero)                                     
-    lw $sp 2527($zero)                                      
-    lw $fp 2528($zero)          
-    lw $ra 2529($zero)          
-    lw $pilha 2530($zero)          
-    lw $temp 2531($zero)
