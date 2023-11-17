@@ -17,13 +17,13 @@
 %define contexto 2035
 
 inicio:              
-    lw $s0 var_controle($zero)     # Carregar o valor do endereço de memória 2500 no registrador $t0
-    beq $s0 $zero main
+    lw $s1 var_controle($zero)     # Carregar o valor do endereço de memória 2500 no registrador $t0
+    beq $s1 $zero main
     disp $zero $zero 3             # Imprimir no display que houve uma interrupção
 
     # Voltar para onde o SO estava executando
-    lw $s0 pc_so($zero)
-    jr $zero $s0 $zero
+    lw $s1 pc_so($zero)
+    jr $zero $s1 $zero
 
 main:
     ori $t1 $zero 1
@@ -50,6 +50,8 @@ escolha1:
     or $t3 $t1 $t2                 # Se $t1 = 1 ou $t2 = 1, $t3 = 1
     beq $t3 $t4 escolha1           # Se $t3 = 0, o valor está entre 1 e 10
     
+    add $s0 $zero $zero            # Atribui o valor do frame de memória do programa escolhido pelo usuário ao registrador $s0
+
     pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
     addi $t2 $t2 7                 # Soma 7 ao valor do pc atual para apontar para o nop
     sw $t2 pc_so($zero)         
@@ -104,8 +106,10 @@ escolha2:
         j while1
     end_while1:
     
+    sw $t0 var_total($zero) # total = i
+
     while2:
-        lw $t0 total($zero)
+        lw $t0 var_total($zero)
         slt $t1 $t0 $zero
         beq $t1 $zero end_while2
 
@@ -116,43 +120,126 @@ escolha2:
         slt $t3 $t1 $t2
         slt $t3 $t2 $t1
         xori $t3 $t3 1
+
+        add $s1 $t2 $zero # $s1 = id
+
         beq $t3 $zero else2
             # TODO: Aqui eu preciso pegar da memória o valor do pc do programa que está sendo executado salvo na memória
             add $t6 $zero $t2 # $t6 = id
             subi $t6 $t6 1
             ori $t4 $zero 33 
-            mul $t3 $t6 $t4
+            mul $s0 $t6 $t4
 
-            lw $t3 contexto($t3) # 33*ID + 2035
+            lw $s2 contexto($t4) # 33*ID + 2035
+            
+            jal carrega_contexto # Carrega o contexto do programa que está sendo executado
+            
+            lw $ra contexto($s0)
 
-            j end_if1
+            j end_if2
 
         else2:
             # Caso o programa não esteja sendo executado, executar o programa a partir do seu pc inicial
             ori $t3 $zero 150              
-            mul $t3 $t2 $t3
+            mul $s2 $t2 $t3
 
-        end_if1:
+        end_if2:
 
+        # Troca de contexto já foi feita. Utilizar só registradores $s0 e $s1
+        pc $s0 $zero 0
+        addi $s0 $s0 8
+        sw $s0 pc_so($zero)
+       
         # Calcula o valor inicial do frame de memória do programa
-        ori $t5 $zero 500
-        mul $t5 $t2 $t5
-        add $s0 $zero $t5 # $s0 = pc
+        ori $s0 $zero 500
+        mul $s0 $s1 $s0
 
-        # Salva o valor do pc do SO em um registrador
+        disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        pc $t5 $zero 0
-        addi $t5 $t5 5
-        sw $t5 pc_so($zero)
-        disp $zero $t2 4             # Imprimir no display o programa escolhido pelo usuário
-
-        jr $zero $t3 $zero 
+        clk $zero $zero 20 # Executa o programa por 20 ciclos de clock   
+        jr $zero $s2 $zero 
 
         nop 
-
         
+        checkint $
+        ori $s1 $zero 1
+        slt $s2 $s1 $s0
+        slt $s2 $s0 $s1
+        xori $s2 $s2 1
 
+        beq $s2 $zero else3
+            j salva_contexto
+            
+            j end_if3
+        else3:
+
+
+        end_if3:
+        
+        j while2
 
     end_while2:
     
     j main                      # Volta para o início do programa
+
+
+# Carrega o contexto do programa que está sendo executado
+carrega_contexto:
+    addi $s0 $s0 1
+    lw $t1 contexto($s0)
+    addi $s0 $s0 1
+    lw $t2 contexto($s0)
+    addi $s0 $s0 1
+    lw $t3 contexto($s0)
+    addi $s0 $s0 1
+    lw $t4 contexto($s0)
+    addi $s0 $s0 1
+    lw $t5 contexto($s0)
+    addi $s0 $s0 1
+    lw $t6 contexto($s0)
+    addi $s0 $s0 1
+    lw $t7 contexto($s0)
+    addi $s0 $s0 1
+    lw $t8 contexto($s0)
+    addi $s0 $s0 1
+    lw $t9 contexto($s0)
+    addi $s0 $s0 1
+    lw $t10 contexto($s0)
+    addi $s0 $s0 1
+    lw $t11 contexto($s0)
+    addi $s0 $s0 1
+    lw $t12 contexto($s0)
+    addi $s0 $s0 1
+    lw $t13 contexto($s0)
+    addi $s0 $s0 1
+    lw $t14 contexto($s0)
+    addi $s0 $s0 1
+    lw $t15 contexto($s0)
+    addi $s0 $s0 1
+    lw $t16 contexto($s0)
+    addi $s0 $s0 1
+    lw $t17 contexto($s0)
+    addi $s0 $s0 1
+    lw $t18 contexto($s0)
+    addi $s0 $s0 1
+    lw $t19 contexto($s0)
+    addi $s0 $s0 1
+    lw $t20 contexto($s0)
+    addi $s0 $s0 1
+    lw $t21 contexto($s0)
+    addi $s0 $s0 1
+    lw $t22 contexto($s0)
+    addi $s0 $s0 1
+    lw $pilha contexto($s0)
+    addi $s0 $s0 1
+    lw $temp contexto($s0)
+    addi $s0 $s0 1
+    lw $sp contexto($s0)
+    addi $s0 $s0 1
+    lw $fp contexto($s0)
+    addi $s0 $s0 1
+
+    # Não esquecer de salvar o $ra na main
+    jr $zero $ra $zero
+    
+
