@@ -21,6 +21,9 @@ file_order = {
     "sort": 9
 }
 
+interval = 300
+
+
 def main():
     try:
         # Get every file in the input folder
@@ -33,7 +36,7 @@ def main():
             for line in so_file:
                 final_file.write(line)
                 count += 1
-            final_file.write("00000011111111111111100000100000\n"*(150-count))
+            final_file.write("00000011111111111111100000100000\n"*(interval-count))
 
         # Sort the files in "files" list by the order in file_order dict
         files.sort(key=lambda x: file_order[x.split(".")[0]])
@@ -50,18 +53,18 @@ def main():
             for line in content.split("\n"):
                 if line != "":
                     if line[:6] in ["000010", "000011"]:
-                        # Get the last 26 bits of the instruction and add 150 * num_files + 1
-                        line = line[:6] + "{:026b}".format(int(line[6:], 2) + 150 * num_files + 1)
+                        # Get the last 26 bits of the instruction and add interval * num_files + 1
+                        line = line[:6] + "{:026b}".format(int(line[6:], 2) + interval * num_files + 1)
                     
                     if line[:6] in ["000100", "000101"]:
-                        # Get the last 16 bits of the instruction and add 150 * num_files + 1
-                        line = line[:6] + "{:016b}".format(int(line[6:], 2) + 150 * num_files + 1)
+                        # Get the last 16 bits of the instruction and add interval * num_files + 1
+                        line = line[:6] + "{:016b}".format(int(line[6:], 2) + interval * num_files + 1)
                         
                     count += 1
                     final_file.write(line + "\n")
 
-            if count < 250:
-                final_file.write("00000011111111111111100000100000\n"*(150-count))
+            if count < interval:
+                final_file.write("00000011111111111111100000100000\n"*(interval-count))
 
         final_file.close()
         print(green_text, "Concatenação Finalizada com sucesso!", end_text, sep="")
