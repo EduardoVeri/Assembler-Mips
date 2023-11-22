@@ -6,7 +6,7 @@
 # O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
-%define pc_so 2500
+%define pc_so 2036
 %define var_controle 2000
 %define var_total 2001
 %define var_i 2002
@@ -15,6 +15,8 @@
 %define id_procs 2005
 %define state_procs 2020
 %define contexto 2035
+%define program_interval 300
+
 
 inicio:              
     lw $s1 var_controle($zero)     # Carregar o valor do endereço de memória 2500 no registrador $t0
@@ -55,7 +57,7 @@ escolha1:
     pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
     addi $t2 $t2 7                 # Soma 7 ao valor do pc atual para apontar para o nop
     sw $t2 pc_so($zero)         
-    ori $t3 $zero 150              
+    ori $t3 $zero program_interval              
     mul $t4 $t0 $t3
     disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
     jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado
@@ -110,7 +112,7 @@ escolha2:
 
     while2:
         lw $t0 var_total($zero)
-        slt $t1 $t0 $zero
+        slt $t1 $zero $t0
         beq $t1 $zero end_while2
 
         lw $t1 state_procs($zero) # state = state_procs[0]
@@ -140,7 +142,7 @@ escolha2:
 
         else2:
             # Caso o programa não esteja sendo executado, executar o programa a partir do seu pc inicial
-            ori $t3 $zero 150              
+            ori $t3 $zero program_interval              
             mul $s2 $t2 $t3
 
         end_if2:
