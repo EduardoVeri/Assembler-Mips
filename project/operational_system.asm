@@ -87,19 +87,14 @@ escolha2:
         beq $t2 $zero end_if1
 
         # Verifica se o valor é igual a 0 para sair do loop
-        slt $t2 $t5 $zero
-        slt $t2 $zero $t5
-        xori $t2 $t2 1
-        beq $t2 $zero else1
+        bne $t5 $zero else1
             add $t1 $zero $zero # bool = 0
             j end_if1
 
         # Salva o id do programa a ser executado
         else1:
             sw $t5 id_procs($t0) # id_procs[i] = input()
-
-            ori $t3 $zero 0
-            sw $t3 state_procs($t0) # state_procs[i] = 0 
+            sw $zero state_procs($t0) # state_procs[i] = 0 
 
             addi $t0 $t0 1
 
@@ -111,21 +106,16 @@ escolha2:
     sw $t0 var_total($zero) # total = i
 
     while2:
+        disp $zero $zero 0 # Imprimir no display que o SO está executando
         lw $t0 var_total($zero)
         slt $t1 $zero $t0
         beq $t1 $zero end_while2
 
         lw $t1 state_procs($zero) # state = state_procs[0]
         lw $t2 id_procs($zero) # id = id_procs[0]
-
-        ori $t4 $zero 1
-        slt $t3 $t1 $t2
-        slt $t3 $t2 $t1
-        xori $t3 $t3 1
-
         add $s1 $t2 $zero # $s1 = id
 
-        beq $t3 $zero else2
+        beq $t1 $zero else2
             # TODO: Aqui eu preciso pegar da memória o valor do pc do programa que está sendo executado salvo na memória
             add $t6 $zero $t2 # $t6 = id
             # subi $t6 $t6 1
@@ -158,21 +148,18 @@ escolha2:
 
         disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        clk $zero $zero 20 # Executa o programa por 20 ciclos de clock   
+        clk $zero $zero 50 # Executa o programa por 20 ciclos de clock   
         jr $zero $s2 $zero 
 
         nop 
-        
+        disp $zero $zero 0 # Imprimir no display que o SO está executando
         # --- Aqui tudo precisa ser feito com registradores reservados ---
         checkint $s0 $zero 0 # Verifica qual interrupção ocorreu
 
         ori $s1 $zero 1
-        slt $s2 $s1 $s0
-        slt $s2 $s0 $s1
-        xori $s2 $s2 1
 
         # --- Interrupção de tempo - Levar para o final da fila de execução ---
-        beq $s2 $zero else3
+        beq $s0 $s1 else3
             lw $s2 id_procs($zero) # $s0 = id do programa que está sendo executado
             # subi $t6 $t6 1
             ori $s1 $zero 33 
@@ -189,7 +176,6 @@ escolha2:
             
             ori $t0 $zero 0
             add $t1 $zero $s2  # buffer_proc = id_procs[0]
-            lw $t6 state_procs($zero) # buffer_state = state_procs[0]
             lw $t2 var_total($zero) 
             subi $t2 $t2 1
                 
@@ -212,6 +198,7 @@ escolha2:
             end_while3:
 
             sw $t1 id_procs($t2) # id_procs[total-1] = buffer_proc
+            ori $t6 $zero 1
             sw $t6 state_procs($t2) # state_procs[total-1] = buffer_state
 
             j end_if3
