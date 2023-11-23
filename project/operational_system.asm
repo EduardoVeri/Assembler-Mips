@@ -6,6 +6,13 @@
 # O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
+# TODO - Fazer com que não ocorra interrupção de clock depois de acontecer um halt 
+        # Parece fácil de arrumar, só cancelar o timer após o halt
+# TODO - Verificar se o programa executa corretamente quando mem = 0  e mem = 500
+        # Erro encontrado na função get_fp() em memoria.c
+# TODO - Alterar a forma que são armazenados a pilha de parametros no compilador
+
+
 %define pc_so 2036
 %define var_controle 2000
 %define var_total 2001
@@ -52,7 +59,8 @@ escolha1:
     or $t3 $t1 $t2                 # Se $t1 = 1 ou $t2 = 1, $t3 = 1
     beq $t3 $t4 escolha1           # Se $t3 = 0, o valor está entre 1 e 10
     
-    add $s0 $zero $zero            # Atribui o valor do frame de memória do programa escolhido pelo usuário ao registrador $s0
+    #add $s0 $zero $zero            # Atribui o valor do frame de memória do programa escolhido pelo usuário ao registrador $s0
+    ori $s0 $zero 500
 
     pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
     addi $t2 $t2 7                 # Soma 7 ao valor do pc atual para apontar para o nop
@@ -116,7 +124,6 @@ escolha2:
         add $s1 $t2 $zero # $s1 = id
 
         beq $t1 $zero else2
-            # TODO: Aqui eu preciso pegar da memória o valor do pc do programa que está sendo executado salvo na memória
             add $t6 $zero $t2 # $t6 = id
             # subi $t6 $t6 1
             ori $t4 $zero 33 
