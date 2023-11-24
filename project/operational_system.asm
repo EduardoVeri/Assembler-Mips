@@ -8,21 +8,20 @@
 
 # TODO - Fazer com que não ocorra interrupção de clock depois de acontecer um halt 
         # Parece fácil de arrumar, só cancelar o timer após o halt
-# TODO - Verificar se o programa executa corretamente quando mem = 0  e mem = 500
-        # Erro encontrado na função get_fp() em memoria.c
 # TODO - Alterar a forma que são armazenados a pilha de parametros no compilador
 
 
-%define pc_so 2036
-%define var_controle 2000
-%define var_total 2001
-%define var_i 2002
-%define buffer 2003
-%define interruption 2004
-%define id_procs 2005
-%define state_procs 2020
-%define contexto 2035
-%define program_interval 300
+%define pc_so 0
+%define var_controle 1
+%define var_total 2
+%define var_i 3
+%define buffer 4
+%define interruption 5
+%define id_procs 6
+%define state_procs 17
+%define contexto 28
+%define program_size 300
+%define data_size 300
 
 
 inicio:              
@@ -60,12 +59,12 @@ escolha1:
     beq $t3 $t4 escolha1           # Se $t3 = 0, o valor está entre 1 e 10
     
     #add $s0 $zero $zero            # Atribui o valor do frame de memória do programa escolhido pelo usuário ao registrador $s0
-    ori $s0 $zero 500
+    ori $s0 $zero data_size
 
     pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
     addi $t2 $t2 7                 # Soma 7 ao valor do pc atual para apontar para o nop
     sw $t2 pc_so($zero)         
-    ori $t3 $zero program_interval              
+    ori $t3 $zero program_size              
     mul $t4 $t0 $t3
     disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
     jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado
@@ -139,7 +138,7 @@ escolha2:
 
         else2:
             # Caso o programa não esteja sendo executado, executar o programa a partir do seu pc inicial
-            ori $t3 $zero program_interval              
+            ori $t3 $zero program_size              
             mul $s2 $t2 $t3
 
         end_if2:
@@ -150,23 +149,26 @@ escolha2:
         sw $s0 pc_so($zero)
        
         # Calcula o valor inicial do frame de memória do programa
-        ori $s0 $zero 500
+        ori $s0 $zero data_size
         mul $s0 $s1 $s0
 
         disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        clk $zero $zero 50 # Executa o programa por 20 ciclos de clock   
+        #clk $zero $zero 20 # Executa o programa por 20 ciclos de clock   
         jr $zero $s2 $zero 
 
         nop 
         disp $zero $zero 0 # Imprimir no display que o SO está executando
         # --- Aqui tudo precisa ser feito com registradores reservados ---
         checkint $s0 $zero 0 # Verifica qual interrupção ocorreu
-
-        ori $s1 $zero 1
+        out $zero $s0 0 # Imprime no display qual interrupção ocorreu
+        ori $s1 $zero 2
 
         # --- Interrupção de tempo - Levar para o final da fila de execução ---
         beq $s0 $s1 else3
+            ori $s1 $zero 50
+            out $zero $s1 0
+
             lw $s2 id_procs($zero) # $s0 = id do programa que está sendo executado
             # subi $t6 $t6 1
             ori $s1 $zero 33 
@@ -212,6 +214,9 @@ escolha2:
 
         # --- Halt do programa. Excluir o programa da lista de programas a serem executados ---
         else3:
+            ori $t20 $zero 100
+            out $zero $t20 0
+
             ori $t0 $zero 0 # i = 0
             lw $t1 var_total($zero) # total = var_total
             subi $t1 $t1 1
@@ -219,7 +224,7 @@ escolha2:
             while4:
                 slt $t2 $t0 $t1
                 beq $t2 $zero end_while4
-
+                
                 addi $t3 $t0 id_procs
                 lw $t4 1($t3) # $t4 = id_procs[i+1]
                 sw $t4 id_procs($t0) # id_procs[i] = id_procs[i+1]
