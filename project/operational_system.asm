@@ -36,14 +36,14 @@ inicio:
 main:
     ori $t1 $zero 1
     ori $t2 $zero 2                    
-    sw $t1 var_controle($zero)             # Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
+    sw $t1 var_controle($zero) # Assim que o programa é efetuado pela primeira vez, sobrescreve o valor 0 por 1
 
-    disp $zero $zero 1             # Imprimir no display as opções disponíveis para o usuário
+    disp $zero $zero 1  # Imprimir no display as opções disponíveis para o usuário
     in $t0 $zero 0              
 
-    beq $t0 $t1 escolha1           # Se o usuário digitar 1, executar um programa
-    beq $t0 $t2 escolha2           # Se o usuário digitar 2, executar vários programas com preempção
-    j main                         # Volta para o início do programa
+    beq $t0 $t1 escolha1   # Se o usuário digitar 1, executar um programa
+    beq $t0 $t2 escolha2   # Se o usuário digitar 2, executar vários programas com preempção
+    j main                 # Volta para o início do programa
 
 # Executar um programa
 escolha1:                       
@@ -154,7 +154,7 @@ escolha2:
 
         disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        #clk $zero $zero 20 # Executa o programa por 20 ciclos de clock   
+        clk $zero $zero 15 # Executa o programa por 20 ciclos de clock   
         jr $zero $s2 $zero 
 
         nop 
