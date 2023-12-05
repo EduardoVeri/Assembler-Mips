@@ -152,7 +152,7 @@ escolha2:
 
         disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        clk $zero $zero 40 # Executa o programa por 20 ciclos de clock   
+        clk $zero $zero 60 # Executa o programa por 20 ciclos de clock   
         jr $zero $s2 $zero 
 
         nop 
@@ -175,9 +175,10 @@ escolha2:
             out $zero $s0 0
 
             # TODO: Só armazenar o valor do $ra em um registrador reservado
-            #addi $s0 $s0 28
-            #out $zero $s0 0
-            #sw $ra contexto($s0) # Salva o $ra do programa que estava sendo executado
+            add $s1 $s0 $zero
+            addi $s1 $s1 28
+            sw $ra contexto($s1) # Salva o $ra do programa que estava sendo executado
+
             #out $zero $ra 0
             #subi $s0 $s0 28
             
