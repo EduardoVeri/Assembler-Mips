@@ -6,8 +6,6 @@
 # O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
-# TODO - Fazer com que não ocorra interrupção de clock depois de acontecer um halt 
-        # Parece fácil de arrumar, só cancelar o timer após o halt
 # TODO - Alterar a forma que são armazenados a pilha de parametros no compilador
 
 
@@ -127,13 +125,13 @@ escolha2:
             # subi $t6 $t6 1
             ori $t4 $zero 33 
             mul $s0 $t6 $t4
-
+            out $zero $s0 0
             lw $s2 contexto($s0) # 33*ID + 2035
-            
+            #out $zero $s2 0
             jal carrega_contexto # Carrega o contexto do programa que está sendo executado
-            
+            out $zero $s0 0
             lw $ra contexto($s0)
-
+            #out $zero $ra 0
             j end_if2
 
         else2:
@@ -154,32 +152,34 @@ escolha2:
 
         disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        clk $zero $zero 15 # Executa o programa por 20 ciclos de clock   
+        clk $zero $zero 40 # Executa o programa por 20 ciclos de clock   
         jr $zero $s2 $zero 
 
         nop 
         disp $zero $zero 0 # Imprimir no display que o SO está executando
         # --- Aqui tudo precisa ser feito com registradores reservados ---
         checkint $s0 $zero 0 # Verifica qual interrupção ocorreu
-        out $zero $s0 0 # Imprime no display qual interrupção ocorreu
+        
         ori $s1 $zero 2
 
         # --- Interrupção de tempo - Levar para o final da fila de execução ---
         beq $s0 $s1 else3
-            ori $s1 $zero 50
-            out $zero $s1 0
-
             lw $s2 id_procs($zero) # $s0 = id do programa que está sendo executado
             # subi $t6 $t6 1
             ori $s1 $zero 33 
             mul $s0 $s2 $s1
 
             pci $s1 $zero 0 # Salva o pc do programa que está sendo executado
+            #out $zero $s1 0
             sw $s1 contexto($s0) # Salva o contexto do programa que está sendo executado
-            
-            addi $s0 $s0 28
-            sw $ra contexto($s0) # Salva o $ra do programa que estava sendo executado
-            subi $s0 $s0 28
+            out $zero $s0 0
+
+            # TODO: Só armazenar o valor do $ra em um registrador reservado
+            #addi $s0 $s0 28
+            #out $zero $s0 0
+            #sw $ra contexto($s0) # Salva o $ra do programa que estava sendo executado
+            #out $zero $ra 0
+            #subi $s0 $s0 28
             
             jal salva_contexto
             
@@ -214,9 +214,6 @@ escolha2:
 
         # --- Halt do programa. Excluir o programa da lista de programas a serem executados ---
         else3:
-            ori $t20 $zero 100
-            out $zero $t20 0
-
             ori $t0 $zero 0 # i = 0
             lw $t1 var_total($zero) # total = var_total
             subi $t1 $t1 1
@@ -251,6 +248,8 @@ escolha2:
 
 # Carrega o contexto do programa que está sendo executado
 carrega_contexto:
+    addi $s0 $s0 1
+    lw $t0 contexto($s0)
     addi $s0 $s0 1
     lw $t1 contexto($s0)
     addi $s0 $s0 1
@@ -303,6 +302,7 @@ carrega_contexto:
     lw $sp contexto($s0)
     addi $s0 $s0 1
     lw $fp contexto($s0)
+    out $zero $fp 0
     addi $s0 $s0 1
 
     # Não esquecer de salvar o $ra na main
@@ -363,6 +363,7 @@ salva_contexto:
     sw $sp contexto($s0)
     addi $s0 $s0 1
     sw $fp contexto($s0)
+    out $zero $fp 0
 
     # Não esquecer de salvar o $ra na main
     jr $zero $ra $zero
