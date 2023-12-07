@@ -125,11 +125,11 @@ escolha2:
             # subi $t6 $t6 1
             ori $t4 $zero 33 
             mul $s0 $t6 $t4
-            out $zero $s0 0
+            #out $zero $s0 0
             lw $s2 contexto($s0) # 33*ID + 2035
             #out $zero $s2 0
             jal carrega_contexto # Carrega o contexto do programa que está sendo executado
-            out $zero $s0 0
+            #out $zero $s0 0
             lw $ra contexto($s0)
             #out $zero $ra 0
             j end_if2
@@ -152,7 +152,7 @@ escolha2:
 
         disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        clk $zero $zero 60 # Executa o programa por 20 ciclos de clock   
+        clk $zero $zero 35 # Executa o programa por ## ciclos de clock   
         jr $zero $s2 $zero 
 
         nop 
@@ -172,7 +172,7 @@ escolha2:
             pci $s1 $zero 0 # Salva o pc do programa que está sendo executado
             #out $zero $s1 0
             sw $s1 contexto($s0) # Salva o contexto do programa que está sendo executado
-            out $zero $s0 0
+            #out $zero $s0 0
 
             # TODO: Só armazenar o valor do $ra em um registrador reservado
             add $s1 $s0 $zero
@@ -239,7 +239,13 @@ escolha2:
             sw $t1 var_total($zero) # var_total = total - 1
 
         end_if3:
-        
+
+        lw $t0 id_procs($zero)
+        out $zero $t0 0
+        ori $t0 $zero 1
+        lw $t0 id_procs($t0)
+        out $zero $t0 0
+
         j while2
 
     end_while2:
@@ -303,7 +309,7 @@ carrega_contexto:
     lw $sp contexto($s0)
     addi $s0 $s0 1
     lw $fp contexto($s0)
-    out $zero $fp 0
+    #out $zero $fp 0
     addi $s0 $s0 1
 
     # Não esquecer de salvar o $ra na main
@@ -364,7 +370,7 @@ salva_contexto:
     sw $sp contexto($s0)
     addi $s0 $s0 1
     sw $fp contexto($s0)
-    out $zero $fp 0
+    #out $zero $fp 0
 
     # Não esquecer de salvar o $ra na main
     jr $zero $ra $zero
