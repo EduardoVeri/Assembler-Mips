@@ -7,7 +7,7 @@ e converter para um arquivo .txt com o código em linguagem de máquina."""
 import sys
 import re
 
-DEBUG = True
+DEBUG = False
 
 green = '\033[92m'
 red = '\033[91m'
