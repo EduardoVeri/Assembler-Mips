@@ -17,8 +17,9 @@
 %define interruption 5
 %define id_procs 6
 %define state_procs 17
-%define contexto 28
-%define program_size 300
+%define contexto 50
+%define so_size 300
+%define program_size 150
 %define data_size 300
 
 
@@ -58,13 +59,18 @@ escolha1:
     
     #add $s0 $zero $zero            # Atribui o valor do frame de memória do programa escolhido pelo usuário ao registrador $s0
     ori $s0 $zero data_size
+    add $s2 $zero $t0
+    out $zero $s0 0
 
     pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
-    addi $t2 $t2 7                 # Soma 7 ao valor do pc atual para apontar para o nop
+    addi $t2 $t2 10                 # Soma 7 ao valor do pc atual para apontar para o nop
     sw $t2 pc_so($zero)         
-    ori $t3 $zero program_size              
+    ori $t3 $zero program_size
+    subi $t0 $t0 1                              
     mul $t4 $t0 $t3
-    disp $zero $t0 4               # Imprimir no display o programa escolhido pelo usuário             
+    addi $t4 $t4 so_size
+    out $zero $t4 0
+    disp $zero $s2 4               # Imprimir no display o programa escolhido pelo usuário             
     jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado
 
     nop 
@@ -120,11 +126,16 @@ escolha2:
         lw $t2 id_procs($zero) # id = id_procs[0]
         add $s1 $t2 $zero # $s1 = id
 
+        #lw $t15 state_procs($zero)
+        #out $zero $t15 0
+        #ori $t15 $zero 1
+        #lw $t15 state_procs($t15)
+        #out $zero $t15 0
+
         beq $t1 $zero else2
-            add $t6 $zero $t2 # $t6 = id
             # subi $t6 $t6 1
             ori $t4 $zero 33 
-            mul $s0 $t6 $t4
+            mul $s0 $t2 $t4
             #out $zero $s0 0
             lw $s2 contexto($s0) # 33*ID + 2035
             #out $zero $s2 0
@@ -141,6 +152,8 @@ escolha2:
 
         end_if2:
 
+        #out $zero $s2 0
+
         # Troca de contexto já foi feita. Utilizar só registradores $s0 e $s1
         pc $s0 $zero 0
         addi $s0 $s0 8
@@ -152,7 +165,7 @@ escolha2:
 
         disp $zero $s1 4 # Imprimir no display o programa escolhido pelo usuário
         
-        clk $zero $zero 35 # Executa o programa por ## ciclos de clock   
+        clk $zero $zero 35 # Executa o programa por N ciclos de clock   
         jr $zero $s2 $zero 
 
         nop 
@@ -184,6 +197,9 @@ escolha2:
             
             jal salva_contexto
             
+            #ori $t15 $zero 15
+            #out $zero $t15 0
+
             ori $t0 $zero 0
             add $t1 $zero $s2  # buffer_proc = id_procs[0]
             lw $t2 var_total($zero) 
@@ -198,7 +214,9 @@ escolha2:
                 sw $t5 id_procs($t0) # id_procs[i] = id_procs[i+1]
                 
                 addi $t4 $t0 state_procs
+                #out $zero $t4 0
                 lw $t5 1($t4) # $t5 = state_procs[i+1]
+                #out $zero $t5 0
                 sw $t5 state_procs($t0) # state_procs[i] = state_procs[i+1]
 
                 addi $t0 $t0 1
@@ -240,11 +258,11 @@ escolha2:
 
         end_if3:
 
-        lw $t0 id_procs($zero)
-        out $zero $t0 0
-        ori $t0 $zero 1
-        lw $t0 id_procs($t0)
-        out $zero $t0 0
+        #lw $t0 state_procs($zero)
+        #out $zero $t0 0
+        #ori $t0 $zero 1
+        #lw $t0 state_procs($t0)
+        #out $zero $t0 0
 
         j while2
 
