@@ -6,8 +6,6 @@
 # O sistema operacional deve possuir um gerenciador de memória que deve ser capaz de gerenciar a memória de um programa em Assembly MIPS reduzida
 # O sistema operacional será escrito na linguagem assembly MIPS reduzida
 
-# TODO - Alterar a forma que são armazenados a pilha de parametros no compilador
-
 
 %define pc_so 0
 %define var_controle 1
@@ -60,17 +58,19 @@ escolha1:
     #add $s0 $zero $zero            # Atribui o valor do frame de memória do programa escolhido pelo usuário ao registrador $s0
     ori $s0 $zero data_size
     add $s2 $zero $t0
-    out $zero $s0 0
 
-    pc $t2 $zero 0                 # Guarda o valor do pc atual em um registrador
-    addi $t2 $t2 10                 # Soma 7 ao valor do pc atual para apontar para o nop
-    sw $t2 pc_so($zero)         
+
+    pc $t2 $zero 0  # Guarda o valor do pc atual em um registrador
+    addi $t2 $t2 9  # Soma ## ao valor do pc atual para apontar para o nop
+    sw $t2 pc_so($zero)   
+
     ori $t3 $zero program_size
     subi $t0 $t0 1                              
     mul $t4 $t0 $t3
     addi $t4 $t4 so_size
-    out $zero $t4 0
-    disp $zero $s2 4               # Imprimir no display o programa escolhido pelo usuário             
+
+    disp $zero $s2 4               # Imprimir no display o programa escolhido pelo usuário   
+
     jr $zero $t4 $zero             # Carregar o endereço de memória onde o programa escolhido pelo usuário está armazenado
 
     nop 
@@ -126,33 +126,26 @@ escolha2:
         lw $t2 id_procs($zero) # id = id_procs[0]
         add $s1 $t2 $zero # $s1 = id
 
-        #lw $t15 state_procs($zero)
-        #out $zero $t15 0
-        #ori $t15 $zero 1
-        #lw $t15 state_procs($t15)
-        #out $zero $t15 0
 
         beq $t1 $zero else2
-            # subi $t6 $t6 1
             ori $t4 $zero 33 
             mul $s0 $t2 $t4
-            #out $zero $s0 0
-            lw $s2 contexto($s0) # 33*ID + 2035
-            #out $zero $s2 0
+            lw $s2 contexto($s0) # Carrega o PC do programa após a interrupção
+
             jal carrega_contexto # Carrega o contexto do programa que está sendo executado
-            #out $zero $s0 0
+
             lw $ra contexto($s0)
-            #out $zero $ra 0
+
             j end_if2
 
         else2:
             # Caso o programa não esteja sendo executado, executar o programa a partir do seu pc inicial
-            ori $t3 $zero program_size              
+            ori $t3 $zero program_size  
+            subi $t2 $t2 1            
             mul $s2 $t2 $t3
+            addi $s2 $s2 so_size
 
         end_if2:
-
-        #out $zero $s2 0
 
         # Troca de contexto já foi feita. Utilizar só registradores $s0 e $s1
         pc $s0 $zero 0
@@ -169,7 +162,9 @@ escolha2:
         jr $zero $s2 $zero 
 
         nop 
+
         disp $zero $zero 0 # Imprimir no display que o SO está executando
+
         # --- Aqui tudo precisa ser feito com registradores reservados ---
         checkint $s0 $zero 0 # Verifica qual interrupção ocorreu
         
@@ -178,28 +173,19 @@ escolha2:
         # --- Interrupção de tempo - Levar para o final da fila de execução ---
         beq $s0 $s1 else3
             lw $s2 id_procs($zero) # $s0 = id do programa que está sendo executado
-            # subi $t6 $t6 1
+
             ori $s1 $zero 33 
             mul $s0 $s2 $s1
 
             pci $s1 $zero 0 # Salva o pc do programa que está sendo executado
-            #out $zero $s1 0
             sw $s1 contexto($s0) # Salva o contexto do programa que está sendo executado
-            #out $zero $s0 0
 
-            # TODO: Só armazenar o valor do $ra em um registrador reservado
             add $s1 $s0 $zero
             addi $s1 $s1 28
             sw $ra contexto($s1) # Salva o $ra do programa que estava sendo executado
-
-            #out $zero $ra 0
-            #subi $s0 $s0 28
             
             jal salva_contexto
             
-            #ori $t15 $zero 15
-            #out $zero $t15 0
-
             ori $t0 $zero 0
             add $t1 $zero $s2  # buffer_proc = id_procs[0]
             lw $t2 var_total($zero) 
@@ -214,9 +200,7 @@ escolha2:
                 sw $t5 id_procs($t0) # id_procs[i] = id_procs[i+1]
                 
                 addi $t4 $t0 state_procs
-                #out $zero $t4 0
                 lw $t5 1($t4) # $t5 = state_procs[i+1]
-                #out $zero $t5 0
                 sw $t5 state_procs($t0) # state_procs[i] = state_procs[i+1]
 
                 addi $t0 $t0 1
@@ -257,12 +241,6 @@ escolha2:
             sw $t1 var_total($zero) # var_total = total - 1
 
         end_if3:
-
-        #lw $t0 state_procs($zero)
-        #out $zero $t0 0
-        #ori $t0 $zero 1
-        #lw $t0 state_procs($t0)
-        #out $zero $t0 0
 
         j while2
 
@@ -327,7 +305,6 @@ carrega_contexto:
     lw $sp contexto($s0)
     addi $s0 $s0 1
     lw $fp contexto($s0)
-    #out $zero $fp 0
     addi $s0 $s0 1
 
     # Não esquecer de salvar o $ra na main
@@ -388,7 +365,6 @@ salva_contexto:
     sw $sp contexto($s0)
     addi $s0 $s0 1
     sw $fp contexto($s0)
-    #out $zero $fp 0
 
     # Não esquecer de salvar o $ra na main
     jr $zero $ra $zero
