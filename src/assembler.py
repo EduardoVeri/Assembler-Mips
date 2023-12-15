@@ -50,6 +50,10 @@ reg = {
     '$t0' : '00000'
 }
 
+instr_R = {
+    'all' : '000000' # Todas as instruções do tipo R
+}
+
 # Dicionário com as instruções do tipo I
 instr_I = {
     'addi': '001000',
@@ -121,7 +125,7 @@ def bin_R(arq, tokens, linha):
         show_error(linha, 'Registrador 3 inválido!')
         
     # Escrevendo o código em linguagem de máquina no arquivo de saída
-    arq.write('000000' + reg[tokens[2]] + reg[tokens[3]] + reg[tokens[1]] + '00000' + funct[tokens[0]] + '\n')
+    arq.write(instr_R['all'] + reg[tokens[2]] + reg[tokens[3]] + reg[tokens[1]] + '00000' + funct[tokens[0]] + '\n')
 
 def bin_I(arq, tokens, linha):
     # Verificando se o número de tokens está correto
@@ -214,7 +218,7 @@ def bin_J(arq, tokens, linha):
     arq.write(instr_J[tokens[0]] + tokens[1] + '\n')
 
 def print_nop(arq):
-    arq.write('00000011111111111111100000100000\n')
+    arq.write(f'{instr_R["all"]}{reg["$zero"]*3}00000{funct["add"]}\n')
 
 def main():
     # Abrindo o arquivo .txt com o código fonte
@@ -263,8 +267,10 @@ def main():
     tokens_list = []
 
     total_lines = 0
+    total_effective_lines = 0
     # Lendo o arquivo .txt com o código fonte
     for linha in arq_in:
+        total_lines += 1
         # Removendo os espaços em branco
         linha = linha.strip()
 
@@ -279,9 +285,9 @@ def main():
             # Verificando se a linha é uma label
             if linha[-1] == ':':
                 # Adicionando a label no dicionário
-                label[linha[:-1]] = total_lines
-                tokens_list.append(([linha[:-1]], str(total_lines) + ": " + linha))
-                total_lines += 1
+                label[linha[:-1]] = total_effective_lines
+                tokens_list.append(([linha[:-1]], str(total_effective_lines) + ": " + linha))
+                total_effective_lines += 1
             # Verificando se a linha é uma definição de constante
             elif linha[0] == '%':
                 # Adicionando a constante no dicionário: Modo de usar: %define constante valor
@@ -291,7 +297,7 @@ def main():
                 # Separando a linha em tokens
                 tokens = list(filter(None, re.split(r'\s+|\(|\)', linha)))
                 tokens_list.append((tokens, str(total_lines) + ": " + linha))
-                total_lines += 1
+                total_effective_lines += 1
         
     for tokens, linha in tokens_list:
         
