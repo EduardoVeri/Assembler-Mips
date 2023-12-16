@@ -130,11 +130,12 @@ escolha2:
         beq $t1 $zero else2
             ori $t4 $zero 33 
             mul $s0 $t2 $t4
-            lw $s2 contexto($s0) # Carrega o PC do programa após a interrupção
+            addi $s0 $s0 contexto
+            lw $s2 0($s0) # Carrega o PC do programa após a interrupção
 
             jal carrega_contexto # Carrega o contexto do programa que está sendo executado
 
-            lw $ra contexto($s0)
+            lw $ra 28($s0)
 
             j end_if2
 
@@ -163,7 +164,7 @@ escolha2:
 
         nop 
 
-        disp $zero $zero 0 # Imprimir no display que o SO está executando
+        #disp $zero $zero 0 # Imprimir no display que o SO está executando
 
         # --- Aqui tudo precisa ser feito com registradores reservados ---
         checkint $s0 $zero 0 # Verifica qual interrupção ocorreu
@@ -176,13 +177,11 @@ escolha2:
 
             ori $s1 $zero 33 
             mul $s0 $s2 $s1
+            addi $s0 $s0 contexto
 
             pci $s1 $zero 0 # Salva o pc do programa que está sendo executado
-            sw $s1 contexto($s0) # Salva o contexto do programa que está sendo executado
-
-            add $s1 $s0 $zero
-            addi $s1 $s1 28
-            sw $ra contexto($s1) # Salva o $ra do programa que estava sendo executado
+            sw $s1 0($s0) # Salva o contexto do programa que está sendo executado
+            sw $ra 28($s1) # Salva o $ra do programa que estava sendo executado
             
             jal salva_contexto
             
@@ -251,120 +250,65 @@ escolha2:
 
 # Carrega o contexto do programa que está sendo executado
 carrega_contexto:
-    addi $s0 $s0 1
-    lw $t0 contexto($s0)
-    addi $s0 $s0 1
-    lw $t1 contexto($s0)
-    addi $s0 $s0 1
-    lw $t2 contexto($s0)
-    addi $s0 $s0 1
-    lw $t3 contexto($s0)
-    addi $s0 $s0 1
-    lw $t4 contexto($s0)
-    addi $s0 $s0 1
-    lw $t5 contexto($s0)
-    addi $s0 $s0 1
-    lw $t6 contexto($s0)
-    addi $s0 $s0 1
-    lw $t7 contexto($s0)
-    addi $s0 $s0 1
-    lw $t8 contexto($s0)
-    addi $s0 $s0 1
-    lw $t9 contexto($s0)
-    addi $s0 $s0 1
-    lw $t10 contexto($s0)
-    addi $s0 $s0 1
-    lw $t11 contexto($s0)
-    addi $s0 $s0 1
-    lw $t12 contexto($s0)
-    addi $s0 $s0 1
-    lw $t13 contexto($s0)
-    addi $s0 $s0 1
-    lw $t14 contexto($s0)
-    addi $s0 $s0 1
-    lw $t15 contexto($s0)
-    addi $s0 $s0 1
-    lw $t16 contexto($s0)
-    addi $s0 $s0 1
-    lw $t17 contexto($s0)
-    addi $s0 $s0 1
-    lw $t18 contexto($s0)
-    addi $s0 $s0 1
-    lw $t19 contexto($s0)
-    addi $s0 $s0 1
-    lw $t20 contexto($s0)
-    addi $s0 $s0 1
-    lw $t21 contexto($s0)
-    addi $s0 $s0 1
-    lw $t22 contexto($s0)
-    addi $s0 $s0 1
-    lw $pilha contexto($s0)
-    addi $s0 $s0 1
-    lw $temp contexto($s0)
-    addi $s0 $s0 1
-    lw $sp contexto($s0)
-    addi $s0 $s0 1
-    lw $fp contexto($s0)
-    addi $s0 $s0 1
+    lw $t0 1($s0)
+    lw $t1 2($s0)
+    lw $t2 3($s0)
+    lw $t3 4($s0)
+    lw $t4 5($s0)
+    lw $t5 6($s0)
+    lw $t6 7($s0)
+    lw $t7 8($s0)
+    lw $t8 9($s0)
+    lw $t9 10($s0)
+    lw $t10 11($s0)
+    lw $t11 12($s0)
+    lw $t12 13($s0)
+    lw $t13 14($s0)
+    lw $t14 15($s0)
+    lw $t15 16($s0)
+    lw $t16 17($s0)
+    lw $t17 18($s0)
+    lw $t18 19($s0)
+    lw $t19 20($s0)
+    lw $t20 21($s0)
+    lw $t21 22($s0)
+    lw $t22 23($s0)
+    lw $pilha 24($s0)
+    lw $temp 25($s0)
+    lw $sp 26($s0)
+    lw $fp 27($s0)
 
     # Não esquecer de salvar o $ra na main
     jr $zero $ra $zero
     
 salva_contexto:
-    addi $s0 $s0 1
-    sw $t0 contexto($s0)
-    addi $s0 $s0 1
-    sw $t1 contexto($s0)
-    addi $s0 $s0 1
-    sw $t2 contexto($s0)
-    addi $s0 $s0 1
-    sw $t3 contexto($s0)
-    addi $s0 $s0 1
-    sw $t4 contexto($s0)
-    addi $s0 $s0 1
-    sw $t5 contexto($s0)
-    addi $s0 $s0 1
-    sw $t6 contexto($s0)
-    addi $s0 $s0 1
-    sw $t7 contexto($s0)
-    addi $s0 $s0 1
-    sw $t8 contexto($s0)
-    addi $s0 $s0 1
-    sw $t9 contexto($s0)
-    addi $s0 $s0 1
-    sw $t10 contexto($s0)
-    addi $s0 $s0 1
-    sw $t11 contexto($s0)
-    addi $s0 $s0 1
-    sw $t12 contexto($s0)
-    addi $s0 $s0 1
-    sw $t13 contexto($s0)
-    addi $s0 $s0 1
-    sw $t14 contexto($s0)
-    addi $s0 $s0 1
-    sw $t15 contexto($s0)
-    addi $s0 $s0 1
-    sw $t16 contexto($s0)
-    addi $s0 $s0 1
-    sw $t17 contexto($s0)
-    addi $s0 $s0 1
-    sw $t18 contexto($s0)
-    addi $s0 $s0 1
-    sw $t19 contexto($s0)
-    addi $s0 $s0 1
-    sw $t20 contexto($s0)
-    addi $s0 $s0 1
-    sw $t21 contexto($s0)
-    addi $s0 $s0 1
-    sw $t22 contexto($s0)
-    addi $s0 $s0 1
-    sw $pilha contexto($s0)
-    addi $s0 $s0 1
-    sw $temp contexto($s0)
-    addi $s0 $s0 1
-    sw $sp contexto($s0)
-    addi $s0 $s0 1
-    sw $fp contexto($s0)
+    sw $t0 1($s0)
+    sw $t1 2($s0)
+    sw $t2 3($s0)
+    sw $t3 4($s0)
+    sw $t4 5($s0)
+    sw $t5 6($s0)
+    sw $t6 7($s0)
+    sw $t7 8($s0)
+    sw $t8 9($s0)
+    sw $t9 10($s0)
+    sw $t10 11($s0)
+    sw $t11 12($s0)
+    sw $t12 13($s0)
+    sw $t13 14($s0)
+    sw $t14 15($s0)
+    sw $t15 16($s0)
+    sw $t16 17($s0)
+    sw $t17 18($s0)
+    sw $t18 19($s0)
+    sw $t19 20($s0)
+    sw $t20 21($s0)
+    sw $t21 22($s0)
+    sw $t22 23($s0)
+    sw $pilha 24($s0)
+    sw $temp 25($s0)
+    sw $sp 26($s0)
+    sw $fp 27($s0)
 
     # Não esquecer de salvar o $ra na main
     jr $zero $ra $zero
