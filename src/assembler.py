@@ -6,6 +6,7 @@ e converter para um arquivo .txt com o código em linguagem de máquina."""
 # Importando as bibliotecas necessárias
 import sys
 import re
+import argparse
 
 DEBUG = False
 
@@ -221,43 +222,20 @@ def print_nop(arq):
     arq.write(f'{instr_R["all"]}{reg["$zero"]*3}00000{funct["add"]}\n')
 
 def main():
-    # Abrindo o arquivo .txt com o código fonte
-    
-    name_arq_in = None
-    name_arq_out = None
-    
-    if len(sys.argv) == 1:
-        name_arq_in = "input.txt"
-        name_arq_out = "output.txt"
-        
-    elif len(sys.argv) == 3:
-        if "-i" in sys.argv:
-            name_arq_in = sys.argv[sys.argv.index("-i") + 1]
-            name_arq_out = "output.txt"
-        elif "-o" in sys.argv:
-            name_arq_in = "input.txt"
-            name_arq_out = sys.argv[sys.argv.index("-o") + 1]
-        else:
-            name_arq_in = sys.argv[1]
-            name_arq_out = sys.argv[2]
-            
-    elif "-i" in sys.argv and  "-o" in sys.argv:
-        name_arq_in = sys.argv[sys.argv.index("-i") + 1]
-        name_arq_out = sys.argv[sys.argv.index("-o") + 1]
-        
-    else:
-        print("Argumentos inválidos!")
-        print(f"Use: python {sys.argv[0]} -i <input_file> -o <output_file>")
-        print(f"Ou: python {sys.argv[0]} <input_file> <output_file>")
-        sys.exit()
-    
+    # Using argparse to parse command-line arguments
+    parser = argparse.ArgumentParser(description='MIPS Assembler')
+    parser.add_argument('-i', '--input', default="input.txt", help='Input file')
+    parser.add_argument('-o', '--output', default="output.txt", help='Output file')
+    args = parser.parse_args()
+    name_arq_in = args.input
+    name_arq_out = args.output
+
     try:
         arq_in = open(name_arq_in, 'r')
     except:
         print(red, f'Erro ao abrir o arquivo! Arquivo "{name_arq_in}" não encontrado', end, sep='')
         sys.exit()
 
-    # Abrindo o arquivo .txt para escrever o código em linguagem de máquina
     try:
         arq_out = open(name_arq_out, 'w')
     except:
