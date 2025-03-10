@@ -10,9 +10,9 @@ import argparse
 
 DEBUG = False
 
-green = '\033[92m'
-red = '\033[91m'
-end = '\033[0m'
+GREEN = '\033[92m'
+RED = '\033[91m'
+RESET = '\033[0m'
 
 # Definindo as variáveis globais
 # Dicionário com os registradores
@@ -104,7 +104,7 @@ label = {}
 const = {}
 
 def show_error(linha, msg):
-    print(red, f'Erro de sintaxe na linha ', end, linha, sep='')
+    print(RED, f'Erro de sintaxe na linha ', RESET, linha, sep='')
     print(msg)
     sys.exit()
 
@@ -236,13 +236,13 @@ def main():
     try:
         arq_in = open(name_arq_in, 'r')
     except:
-        print(red, f'Erro ao abrir o arquivo! Arquivo "{name_arq_in}" não encontrado', end, sep='')
+        print(RED, f'Erro ao abrir o arquivo! Arquivo "{name_arq_in}" não encontrado', RESET, sep='')
         sys.exit()
 
     try:
         arq_out = open(name_arq_out, 'w')
     except:
-        print(red, f'Erro ao abrir o arquivo de saída! Arquivo "{name_arq_out}" não encontrado', end, sep='')
+        print(RED, f'Erro ao abrir o arquivo de saída! Arquivo "{name_arq_out}" não encontrado', RESET, sep='')
         sys.exit()
 
     tokens_list = []
@@ -301,7 +301,7 @@ def main():
     arq_in.close()
     arq_out.close()
 
-    print(green,'Arquivo de saída gerado com sucesso!', end, sep='')
+    print(GREEN,'Arquivo de saída gerado com sucesso!', RESET, sep='')
 
 
 if __name__ == '__main__':
