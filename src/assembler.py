@@ -226,9 +226,12 @@ def main():
     parser = argparse.ArgumentParser(description='MIPS Assembler')
     parser.add_argument('-i', '--input', default="input.txt", help='Input file')
     parser.add_argument('-o', '--output', default="output.txt", help='Output file')
+    parser.add_argument('pos_input', nargs='?', help='Input file (positional, optional)')
+    parser.add_argument('pos_output', nargs='?', help='Output file (positional, optional)')
     args = parser.parse_args()
-    name_arq_in = args.input
-    name_arq_out = args.output
+    # Override flag arguments if positional arguments are provided
+    name_arq_in = args.pos_input if args.pos_input else args.input
+    name_arq_out = args.pos_output if args.pos_output else args.output
 
     try:
         arq_in = open(name_arq_in, 'r')
