@@ -8,6 +8,8 @@ import sys
 import re
 import argparse
 
+from mips.mips_config import reg, instr_R, instr_I, instr_J, funct
+
 DEBUG = False
 
 GREEN = '\033[92m'
@@ -15,89 +17,6 @@ RED = '\033[91m'
 RESET = '\033[0m'
 
 # Definindo as variáveis globais
-# Dicionário com os registradores
-reg = {
-    '$zero': '11111',
-    '$ra' : '11110',
-    '$fp' : '11101',
-    '$sp' : '11100',
-    '$temp' : '11011',
-    '$pilha' : '11010',
-    '$s2' : '11001',
-    '$s1' : '11000',
-    '$s0' : '10111',
-    '$t22' : '10110',
-    '$t21' : '10101',
-    '$t20' : '10100',
-    '$t19' : '10011',
-    '$t18' : '10010',
-    '$t17' : '10001',
-    '$t16' : '10000',
-    '$t15' : '01111',
-    '$t14' : '01110',
-    '$t13' : '01101',
-    '$t12' : '01100',
-    '$t11' : '01011',
-    '$t10' : '01010',
-    '$t9' : '01001',
-    '$t8' : '01000',
-    '$t7' : '00111',
-    '$t6' : '00110',
-    '$t5' : '00101',
-    '$t4' : '00100',
-    '$t3' : '00011',
-    '$t2' : '00010',
-    '$t1' : '00001',
-    '$t0' : '00000'
-}
-
-instr_R = {
-    'all' : '000000' # Todas as instruções do tipo R
-}
-
-# Dicionário com as instruções do tipo I
-instr_I = {
-    'addi': '001000',
-    'andi': '001100',
-    'ori': '001101',
-    'xori': '101101',
-    'lw': '100011',
-    'sw': '101011',
-    'beq': '000100',
-    'bne': '000101',
-    'slti': '001010',
-    'in': '011111',
-    'out': '011110',
-    'subi': '001001',
-    'disp': '111110',
-    'pc': '100100',
-    'pci' : '110100',
-    'clk' : '000001',
-    'checkint' : '000110'
-}
-
-instr_J = {
-    'j': '000010',
-    'jal': '000011',
-    'halt': '111111'
-}
-
-# Dicionário com os functs das instruções
-funct = {
-    'add': '100000',
-    'sub': '100010',
-    'and': '100100',
-    'or': '100101',
-    'xor': '101101',
-    'nor': '100111',
-    'slt': '101010',
-    'sll': '000000',
-    'srl': '000010',
-    'jr': '001000',
-    'mul': '011000',
-    'div': '011010',
-    'jalr': '001001'
-}
 
 # Dicionário com as labels e constantes
 label = {}
