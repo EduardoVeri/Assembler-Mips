@@ -22,13 +22,14 @@ The MIPS used here was a modified version created by me in the class "Laboratór
 
    where `<input_file>` is the path to the file containing the MIPS assembly source code and `<output_file>` is the path to the file where the machine code will be written.
 
-   If no input file is specified, the assembler will look for a file named `input.txt` in the same directory as the assembler. If no output file is specified, the assembler will write the machine code to a file named `output.txt` in the same directory as the assembler.
+> [!TIP]
+> If no input file is provided, the assembler will automatically search for an `input.txt` file in its directory. Similarly, if no output file is specified, the machine code will be written to an `output.txt` file in the same location.
 
 3. The machine code will be written to the output file in binary format. Each line will contain a 32-bit instruction.
 
 ## Instruction Set
 
-The instruction set is composed of 16 instructions, each with a different opcode. The instructions are divided into 3 types: R, I and J. The following table shows the instructions and their opcodes:
+The instruction set is diverse, each with a different opcode. The instructions are divided into 3 types: R, I and J. The following table shows the instructions and their opcodes:
 
 ### Type R
 
@@ -117,6 +118,9 @@ The MIPS used here has 32 registers, each 32 bits wide. The following table show
 | `$temp`      | `27`     | Temporary (Reserved for Compiler)                     |
 | `$pilha`     | `26`     | Stack pointer to a param list (Reserved for Compiler) |
 | `$t0 - $t25` | `0 - 25` | Temporary                                             |
+
+> [!CAUTION]
+> The registers `$temp` and `$pilha` are reserved for the compiler and should not be used in the assembly code.
 
 ## Error Handling
 
