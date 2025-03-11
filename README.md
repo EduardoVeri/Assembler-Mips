@@ -4,6 +4,14 @@ This is a Python assembler developed for the Compiler class. It is designed to r
 
 The MIPS used here was a modified version created by me in the class "Laboratório de Arquitetura e Organização de Computadores". It is simpler and has less instructions than the original version.
 
+The project is a part of a broader initiative at the **Federal University of São Paulo (UNIFESP)** aiming to create a comprehensive computational system, encompassing:
+
+1. [MIPS Processor](https://github.com/EduardoVeri/MIPS-Processor)
+2. [Assembler (Current Project)](https://github.com/EduardoVeri/Assembler-Mips)
+3. [Compiler](https://github.com/EduardoVeri/Compilador)
+4. [Operating System](https://github.com/EduardoVeri/Assembler-Mips/tree/main/OS_project)
+
+
 ## Usage
 
 1. Make sure you have Python installed on your system.
