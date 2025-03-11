@@ -108,15 +108,15 @@ Defines are used to declare constants. The directive `%define` is used to declar
 
 The MIPS used here has 32 registers, each 32 bits wide. The following table shows the registers and their numbers:
 
-| Register     | Number   | Usage                         |
-| ------------ | -------- | ----------------------------- | ------------------------------------ |
-| `$zero`      | `31`     | Constant 0                    |
-| `$ra`        | `30`     | Return address                |
-| `$fp`        | `29`     | Frame pointer                 |
-| `$sp`        | `28`     | Stack pointer                 |
-| `$temp`      | `27`     | Temporary                     | # register reserved for the compiler |
-| `$pilha`     | `26`     | Stack pointer to a param list | # register reserved for the compiler |
-| `$t0 - $t25` | `0 - 25` | Temporary                     |
+| Register     | Number   | Usage                                                 |
+| ------------ | -------- | ----------------------------------------------------- |
+| `$zero`      | `31`     | Constant 0                                            |
+| `$ra`        | `30`     | Return address                                        |
+| `$fp`        | `29`     | Frame pointer                                         |
+| `$sp`        | `28`     | Stack pointer                                         |
+| `$temp`      | `27`     | Temporary (Reserved for Compiler)                     |
+| `$pilha`     | `26`     | Stack pointer to a param list (Reserved for Compiler) |
+| `$t0 - $t25` | `0 - 25` | Temporary                                             |
 
 ## Error Handling
 
