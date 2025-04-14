@@ -27,7 +27,7 @@ interval = 150
 def main():
     try:
         # Get every file in the input folder
-        files = os.listdir("project/input")
+        files = os.listdir("OS_project/input")
 
         final_file = open("bin/final_file.txt", "w")
 
@@ -46,7 +46,7 @@ def main():
             num_files += 1
             
             print("Concatenando arquivo:", arq, '...')
-            with open("project/input/" + arq, "r") as open_file:
+            with open("OS_project/input/" + arq, "r") as open_file:
                 content = open_file.read()
 
             count = 0
