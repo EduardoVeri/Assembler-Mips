@@ -50,7 +50,7 @@ escolha1:
     # Verifica se o valor está entre 1 e 10
     ori $t4 $zero 1               
     slti $t1 $t0 1                 # Se o valor for menor que 0, $t1 = 1
-    slti $t2 $t0 10                # Se o valor for menor que 10, $t2 = 1
+    slti $t2 $t0 11                # Se o valor for menor que 10, $t2 = 1
     xori $t2 $t2 1                 # Inverte o valor de $t2
     or $t3 $t1 $t2                 # Se $t1 = 1 ou $t2 = 1, $t3 = 1
     beq $t3 $t4 escolha1           # Se $t3 = 0, o valor está entre 1 e 10
